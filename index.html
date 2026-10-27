@@ -29,13 +29,24 @@ button,select,input{cursor:pointer;font-family:inherit}
 .con{padding:20px 28px}
 .light .con{padding-top:10px}
 #fab-start{position:fixed;inset:0;z-index:300;background:#0f172af2;display:flex;align-items:center;justify-content:center;padding:20px}
-#fab-start .box{background:#1e293b;border:1px solid #1e3a5f;border-radius:18px;padding:30px 28px;max-width:560px;width:100%;text-align:center}
+#fab-start .box{background:#1e293b;border:1px solid #1e3a5f;border-radius:18px;padding:26px 28px;max-width:620px;max-height:100%;overflow:auto;width:100%;text-align:center}
 #fab-start h2{margin:0 0 6px;font-size:22px;color:#f1f5f9}
 #fab-start p{margin:0 0 22px;font-size:13px;color:#cbd5e1}
 #fab-start .opts{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
-#fab-start button{flex:1;min-width:140px;border:2px solid transparent;border-radius:14px;padding:22px 12px;font-size:17px;font-weight:800;cursor:pointer;font-family:inherit;color:#0f172a}
-#fab-start button small{display:block;font-size:11px;font-weight:600;margin-top:6px;opacity:.8}
-#fab-start button.last{border-color:#fff}
+#fab-start .opts button{flex:1;min-width:140px;border:2px solid transparent;border-radius:14px;padding:22px 12px;font-size:17px;font-weight:800;cursor:pointer;font-family:inherit;color:#0f172a}
+#fab-start .opts button small{display:block;font-size:11px;font-weight:600;margin-top:6px;opacity:.8}
+#fab-start .opts button.last{border-color:#fff}
+#fab-start .chk{background:#f59e0b14;border:1px solid #f59e0b55;border-radius:12px;padding:14px 16px;margin:0 0 20px;text-align:left}
+#fab-start .chk .ct{font-size:13px;font-weight:800;color:#fbbf24;margin-bottom:6px}
+#fab-start .chk p{margin:0 0 10px;font-size:12px;line-height:1.5;color:#e2e8f0}
+#fab-start .chk ol{margin:0 0 12px 18px;padding:0;font-size:12px;line-height:1.55;color:#e2e8f0}
+#fab-start .chk .cb{display:flex;gap:8px;flex-wrap:wrap}
+#fab-start .chk .cb>div{flex:1;min-width:210px;display:flex;gap:6px}
+#fab-start .chk .cb button{flex:1;border:1px solid #f59e0b88;background:#1e293b;color:#fde68a;border-radius:9px;padding:9px 10px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+#fab-start .chk .cb button.ed{flex:0 0 36px;padding:9px 0;color:#cbd5e1;border-color:#475569}
+#chk-age{font-size:11px;color:#cbd5e1;margin-top:2px}
+#chk-age b{font-weight:700;color:#fff}
+#chk-age b.old,#chk-age .old{color:#fbbf24}
 #fab-start .g{background:#06b6d4}#fab-start .m{background:#f97316}#fab-start .t{background:#475569;color:#fff}
 .light #inc-grid{display:block}
 .light #inc-cds{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
@@ -122,7 +133,16 @@ tr:nth-child(even) td{background:#1a2234}tr:nth-child(odd) td{background:#0f172a
 <body>
 <div id="fab-start"><div class="box">
   <img alt="" src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22%3E%3Cdefs%3E%3ClinearGradient id=%22g%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%233b82f6%22/%3E%3Cstop offset=%221%22 stop-color=%22%231d4ed8%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22512%22 height=%22512%22 rx=%22112%22 fill=%22url(%23g)%22/%3E%3Cg transform=%22translate(46 46) scale(17.5)%22%3E%3Cpath fill=%22%23ffffff%22 d=%22M6,4V11H4C2.89,11 2,11.89 2,13V17A3,3 0 0,0 5,20A3,3 0 0,0 8,17H10A3,3 0 0,0 13,20A3,3 0 0,0 16,17V13L12,4H6M17,5V19H22V17.5H18.5V5H17M7.5,5.5H11.2L14.5,13H7.5V5.5M5,15.5A1.5,1.5 0 0,1 6.5,17A1.5,1.5 0 0,1 5,18.5A1.5,1.5 0 0,1 3.5,17A1.5,1.5 0 0,1 5,15.5M13,15.5A1.5,1.5 0 0,1 14.5,17A1.5,1.5 0 0,1 13,18.5A1.5,1.5 0 0,1 11.5,17A1.5,1.5 0 0,1 13,15.5Z%22/%3E%3C/g%3E%3C/svg%3E" style="width:64px;height:64px;margin-bottom:8px"/>
-  <h2>¿Qué fábrica quieres ver?</h2>
+  <div class="chk">
+    <div class="ct">⚠️ 1. Antes de empezar: actualiza los checklist</div>
+    <p>Los Excel de checklist (carretillas y transpalés) solo reciben las últimas respuestas del Forms cuando se abren. Para que el dashboard no muestre datos viejos:</p>
+    <ol><li>Ábrelos con estos botones.</li><li>Espera a que carguen los datos (que aparezcan las últimas filas).</li><li>Ciérralos y vuelve aquí.</li><li>Elige la fábrica y carga los archivos con los botones de arriba (<b>Checklist Excel</b> y <b>Checklist Transpalés</b>).</li></ol>
+    <div class="cb">
+      <div><button id="chk-b-cl" onclick="openChk('cl')">📂 Checklist carretillas</button><button class="ed" title="Cambiar el enlace" onclick="editChk('cl')">✎</button></div>
+      <div><button id="chk-b-tp" onclick="openChk('tp')">📂 Checklist transpalés</button><button class="ed" title="Cambiar el enlace" onclick="editChk('tp')">✎</button></div>
+    </div>
+  </div>
+  <h2>2. ¿Qué fábrica quieres ver?</h2>
   <p>Se mostrarán solo sus datos y los archivos que le corresponden.</p>
   <div class="opts">
     <button class="g" data-f="A Grela" onclick="pickFab(this.dataset.f)">A Grela<small>Carretillas y transpalés</small></button>
@@ -133,7 +153,7 @@ tr:nth-child(even) td{background:#1a2234}tr:nth-child(odd) td{background:#0f172a
 <div id="stk-hdr" style="position:sticky;top:0;z-index:60;background:#0f172a">
 <div class="hdr">
   <div class="hico" style="padding:0;overflow:hidden;background:none"><img alt="" src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22%3E%3Cdefs%3E%3ClinearGradient id=%22g%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%233b82f6%22/%3E%3Cstop offset=%221%22 stop-color=%22%231d4ed8%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22512%22 height=%22512%22 rx=%22112%22 fill=%22url(%23g)%22/%3E%3Cg transform=%22translate(46 46) scale(17.5)%22%3E%3Cpath fill=%22%23ffffff%22 d=%22M6,4V11H4C2.89,11 2,11.89 2,13V17A3,3 0 0,0 5,20A3,3 0 0,0 8,17H10A3,3 0 0,0 13,20A3,3 0 0,0 16,17V13L12,4H6M17,5V19H22V17.5H18.5V5H17M7.5,5.5H11.2L14.5,13H7.5V5.5M5,15.5A1.5,1.5 0 0,1 6.5,17A1.5,1.5 0 0,1 5,18.5A1.5,1.5 0 0,1 3.5,17A1.5,1.5 0 0,1 5,15.5M13,15.5A1.5,1.5 0 0,1 14.5,17A1.5,1.5 0 0,1 13,18.5A1.5,1.5 0 0,1 11.5,17A1.5,1.5 0 0,1 13,15.5Z%22/%3E%3C/g%3E%3C/svg%3E" style="width:100%;height:100%;display:block"/></div>
-  <div><div class="htit">Dashboard Carretillas</div><div class="hsub" id="hsub">Sin datos cargados</div></div>
+  <div><div class="htit">Dashboard Carretillas</div><div class="hsub" id="hsub">Sin datos cargados</div><div id="chk-age" title="Fecha de última modificación de los archivos de checklist cargados"></div></div>
   <button class="fbtn" id="btn-fab" title="Cambiar de fábrica" onclick="showFabStart()" style="background:#334155;color:#fff;margin-left:6px">🏭 Fábrica</button>
   <div class="fabsel hid" id="fab-sel" title="Fábrica: filtra todas las pestañas"></div>
   <div class="hbts">
@@ -327,7 +347,7 @@ tr:nth-child(even) td{background:#1a2234}tr:nth-child(odd) td{background:#0f172a
 </div>
 
 <script>
-var DATA=[],SCHED=null,LEAVE={},TURNOS_LOADED={},TURNOS_FAB_DET=null,CHS={},selC=[],horP='semana',regR=[],regPage=0,incC=[],REPARS=[],DATA_C=[],DATA_T=[],REPARS_BY={};
+var DATA=[],SCHED=null,LEAVE={},TURNOS_LOADED={},TURNOS_FAB_DET=null,CHS={},selC=[],horP='semana',regR=[],regPage=0,incC=[],REPARS=[],DATA_C=[],DATA_T=[],REPARS_BY={},CHK_MOD={};
 // Bajas/Permisos/Vacaciones/Dias libres: mismo bloque de color e inicial en
 // todo el dashboard para no repetir la paleta en cada sitio que lo pinte.
 var LEAVE_TYPES=[
@@ -531,6 +551,7 @@ function loadChecklist(f){
       var wb=XLSX.read(ev.target.result,{type:'binary',cellDates:true});
       DATA_C=parseRows(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:null}));
       rebuildData();
+      CHK_MOD.cl=f.lastModified;refreshChkUi();
       initApp();
     }catch(err){alert('Error checklist: '+err.message);}
     document.getElementById('lod').classList.add('hid');
@@ -574,6 +595,7 @@ function loadTransp(f){
       var wb=XLSX.read(ev.target.result,{type:'binary',cellDates:true});
       DATA_T=parseTranspales(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:null}));
       rebuildData();
+      CHK_MOD.tp=f.lastModified;refreshChkUi();
       var btn=document.getElementById('btn-tp');
       if(btn){
         btn.style.cssText='background:#0ea5e933;color:#0ea5e9;border:1px solid #0ea5e944;padding:8px 15px;border-radius:9px;font-weight:600;font-size:12px;display:inline-flex;align-items:center;gap:7px;cursor:pointer';
@@ -1162,9 +1184,46 @@ function updateFileButtons(){
     var e=document.getElementById(x[0]);if(e)e.classList.toggle('hid',!x[1]);
   });
 }
+// ── ENLACES A LOS EXCEL DE CHECKLIST (SharePoint) ───────────────────────────
+// Los enlaces NO van dentro del HTML (la pagina es publica): cada persona los pega
+// una vez y quedan guardados solo en su navegador.
+var CHK_KEYS={cl:'dash_url_cl',tp:'dash_url_tp'};
+var CHK_NAME={cl:'checklist de carretillas',tp:'checklist de transpalés'};
+// Enlaces por defecto: son direcciones de SharePoint que piden iniciar sesion con la cuenta de la empresa
+// (tipo /:x:/r/..., sin token de "Cualquiera con el enlace"). Un enlace guardado con el lapiz tiene prioridad.
+var CHK_DEFAULT={cl:'https://estrellaga15002637.sharepoint.com/:x:/r/sites/EXPEDICIONES/_layouts/15/Doc.aspx?sourcedoc=%7B57668D44-CE9F-40C4-B788-51D3C02B203F%7D&file=CHECKLIST%20%20CARRETILLAS.xlsx&action=default&mobileredirect=true',tp:'https://estrellaga15002637.sharepoint.com/:x:/r/sites/EXPEDICIONES/_layouts/15/Doc.aspx?sourcedoc=%7BE04E3B83-D979-483A-A33C-33516B2D047E%7D&file=CHECKLIST%20TRANSPALES.xlsx&action=default&mobileredirect=true'};
+function chkUrl(k){var v='';try{v=localStorage.getItem(CHK_KEYS[k])||'';}catch(e){}return v||CHK_DEFAULT[k]||'';}
+function editChk(k){
+  var v=prompt('Pega el enlace de SharePoint del Excel de '+CHK_NAME[k]+'.\nSe guarda solo en este navegador. Déjalo vacío para borrarlo.',chkUrl(k));
+  if(v===null)return chkUrl(k);
+  v=v.trim();
+  if(v&&!/^https:\/\//i.test(v)){alert('El enlace debe empezar por https://');return chkUrl(k);}
+  try{if(v)localStorage.setItem(CHK_KEYS[k],v);else localStorage.removeItem(CHK_KEYS[k]);}catch(e){alert('Este navegador no permite guardar el enlace.');}
+  refreshChkUi();return v;
+}
+function openChk(k){
+  var u=chkUrl(k);
+  if(!u){u=editChk(k);if(!u)return;}
+  window.open(u,'_blank','noopener');
+}
+function chkAge(ts){
+  if(!ts)return '<span class="old">sin cargar</span>';
+  var d=new Date(ts),n=new Date(),hrs=(n-d)/3600000;
+  var hh=p2(d.getHours())+':'+p2(d.getMinutes());
+  var dia=d.toDateString()===n.toDateString()?'hoy':(new Date(n.getTime()-86400000)).toDateString()===d.toDateString()?'ayer':p2(d.getDate())+'/'+p2(d.getMonth()+1);
+  return '<b'+(hrs>24?' class="old"':'')+'>'+dia+' '+hh+'</b>'+(hrs>24?' <span class="old" title="Más de un día sin actualizar">⚠</span>':'');
+}
+function refreshChkUi(){
+  var b;
+  if(b=document.getElementById('chk-b-cl'))b.textContent=chkUrl('cl')?'📂 Checklist carretillas':'🔗 Enlace checklist carretillas…';
+  if(b=document.getElementById('chk-b-tp'))b.textContent=chkUrl('tp')?'📂 Checklist transpalés':'🔗 Enlace checklist transpalés…';
+  var a=document.getElementById('chk-age');
+  if(a)a.innerHTML='🕒 Carretillas '+chkAge(CHK_MOD.cl)+' · Transpalés '+chkAge(CHK_MOD.tp);
+}
 function showFabStart(){
   var last=null;try{last=localStorage.getItem('dash_fab');}catch(e){}
-  document.querySelectorAll('#fab-start button').forEach(function(b){b.classList.toggle('last',b.dataset.f===last);});
+  refreshChkUi();
+  document.querySelectorAll('#fab-start .opts button').forEach(function(b){b.classList.toggle('last',b.dataset.f===last);});
   document.getElementById('fab-start').classList.remove('hid');
 }
 function pickFab(f){
