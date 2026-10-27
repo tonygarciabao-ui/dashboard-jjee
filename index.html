@@ -1,0 +1,1917 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Dashboard Carretillas · JJEE y Aux</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0f172a;color:#e2e8f0;font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh}
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:#1e293b}::-webkit-scrollbar-thumb{background:#334155;border-radius:3px}
+button,select,input{cursor:pointer;font-family:inherit}
+.hdr{background:linear-gradient(135deg,#1e293b,#0f172a);border-bottom:1px solid #1e3a5f;padding:16px 28px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.hico{width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.htit{font-size:19px;font-weight:700;color:#f1f5f9;letter-spacing:-.5px}
+.hsub{font-size:11px;color:#ffffff;margin-top:2px}
+.hbts{margin-left:auto;display:flex;gap:10px;flex-wrap:wrap}
+.fbtn{display:inline-flex;align-items:center;gap:7px;cursor:pointer;padding:8px 15px;border-radius:9px;font-weight:600;font-size:12px;border:none}
+.fbtn input{display:none}
+.tabs{display:flex;gap:2px;padding:12px 28px 0;border-bottom:1px solid #1e293b;background:#0f172a;overflow-x:auto}
+.tab{padding:8px 16px;border-radius:8px 8px 0 0;border:none;cursor:pointer;font-size:12px;font-weight:600;white-space:nowrap;background:transparent;color:#ffffff;border-bottom:2px solid transparent}
+.tab.active{background:#1e293b;color:#3b82f6;border-bottom-color:#3b82f6}
+.con{padding:20px 28px}
+.light .con{padding-top:10px}
+#fab-start{position:fixed;inset:0;z-index:300;background:#0f172af2;display:flex;align-items:center;justify-content:center;padding:20px}
+#fab-start .box{background:#1e293b;border:1px solid #1e3a5f;border-radius:18px;padding:30px 28px;max-width:560px;width:100%;text-align:center}
+#fab-start h2{margin:0 0 6px;font-size:22px;color:#f1f5f9}
+#fab-start p{margin:0 0 22px;font-size:13px;color:#cbd5e1}
+#fab-start .opts{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+#fab-start button{flex:1;min-width:140px;border:2px solid transparent;border-radius:14px;padding:22px 12px;font-size:17px;font-weight:800;cursor:pointer;font-family:inherit;color:#0f172a}
+#fab-start button small{display:block;font-size:11px;font-weight:600;margin-top:6px;opacity:.8}
+#fab-start button.last{border-color:#fff}
+#fab-start .g{background:#06b6d4}#fab-start .m{background:#f97316}#fab-start .t{background:#475569;color:#fff}
+.light #inc-grid{display:block}
+.light #inc-cds{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.light #inc-cds .ic{position:relative;background:#1e293b;border:1px solid #3b82f6;border-radius:12px;padding:10px 18px;color:#93c5fd;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit}
+.light #inc-cds .ic.sel{outline:none;background:#1d4ed8;color:#fff;border-color:#93c5fd}
+.light #inc-cds .dot{position:absolute;top:5px;right:6px;width:8px;height:8px;border-radius:50%;background:#f59e0b}
+.light #inc-pan{position:static!important}
+.light #inc-pan.twocol{background:transparent;padding:0;border:none;min-height:0}
+.inc2{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+.inc-col{overflow-y:auto;background:#1e293b;border-radius:12px;padding:14px;min-width:0}
+.inc-col>div:first-child{margin-top:0!important}
+@media(max-width:800px){.inc2{grid-template-columns:1fr}}
+.fabsel{display:flex;gap:2px;background:#1e293b;border-radius:10px;padding:3px;margin-left:6px}
+.fabsel button{border:none;background:transparent;color:#cbd5e1;font-weight:700;font-size:12px;padding:6px 14px;border-radius:8px;cursor:pointer;font-family:inherit}
+.fabsel button.on{background:#3b82f6;color:#fff}
+.fabsel button.on[data-c=g]{background:#06b6d4;color:#0f172a}
+.fabsel button.on[data-c=m]{background:#f97316;color:#0f172a}
+.kmini{display:flex;gap:6px;margin-left:auto;align-self:center;margin-bottom:6px;padding-left:12px;flex-shrink:0}
+.kchip{display:inline-flex;align-items:center;gap:5px;background:#1e293b;border-radius:7px;padding:4px 9px;font-size:11px;color:#cbd5e1;white-space:nowrap;border-left:3px solid #3b82f6}
+.kchip b{font-size:14px;font-weight:800}
+.hid{display:none!important}
+.upro{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:360px;gap:16px;text-align:center}
+.uico{width:84px;height:84px;border-radius:20px;background:#1e293b;border:2px dashed #334155;display:flex;align-items:center;justify-content:center;font-size:40px}
+.kgrd{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:18px}
+@media(max-width:800px){.kgrd{grid-template-columns:repeat(3,1fr)}}
+.kpi{background:#1e293b;border-radius:10px;padding:13px 17px}
+.kv{font-size:24px;font-weight:800}.kl{font-size:11px;color:#ffffff;margin-top:2px}
+.flts{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:flex-end}
+.fg{display:flex;flex-direction:column;gap:3px}
+.fl{font-size:10px;color:#ffffff;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+select.fi{background:#1e293b;color:#e2e8f0;border:1px solid #334155;border-radius:7px;padding:6px 10px;font-size:12px;outline:none;min-width:120px}
+input.fd{background:#1e293b;color:#e2e8f0;border:1px solid #334155;border-radius:7px;padding:6px 10px;font-size:12px;outline:none;min-width:150px;color-scheme:dark}
+input.fd::-webkit-calendar-picker-indicator{filter:brightness(0) invert(1);opacity:.85;cursor:pointer}
+.bcl{padding:7px 13px;border-radius:7px;border:1px solid #334155;background:transparent;color:#ffffff;font-size:12px;align-self:flex-end}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{padding:10px 13px;text-align:left;color:#ffffff;font-weight:600;border-bottom:1px solid #0f172a;background:#1e293b}
+td{padding:9px 13px;color:#ffffff;border-bottom:1px solid #1e293b}
+tr:nth-child(even) td{background:#1a2234}tr:nth-child(odd) td{background:#0f172a}
+.tw{border-radius:10px;border:1px solid #1e3a5f}
+.rgrd{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(430px,1fr);gap:14px;align-items:start}
+@media(max-width:1250px){.rgrd{grid-template-columns:1fr}}
+#tb-reg tr{cursor:pointer}
+#tb-reg tr.sel td{background:#1e3a5f!important}
+#tb-reg tr.sel td:first-child{box-shadow:inset 3px 0 0 #3b82f6}
+#tb-reg td{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cki.inf{border-left-color:#ffffff}
+.card{background:#1e293b;border-radius:12px;padding:20px}
+.ctit{font-size:13px;font-weight:600;color:#ffffff;margin-bottom:14px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:900px){.g2{grid-template-columns:1fr}}
+.g3{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.ic{background:#1e293b;border-radius:10px;padding:13px}
+.pr{background:#1e293b;border-radius:8px;padding:10px 13px;margin-bottom:6px;border-left:3px solid #ef4444;display:flex;align-items:center;gap:10px}
+.pro{background:#1e293b;border-radius:8px;padding:10px 13px;margin-bottom:6px;border-left:3px solid #22c55e;display:flex;align-items:center;gap:10px}
+.sb{display:flex;flex-direction:column;align-items:center}
+.sv{font-size:17px;font-weight:800}.sl{font-size:10px;color:#ffffff}
+.ri{background:#1e293b;border-radius:8px;padding:9px 11px;cursor:pointer;border:1px solid #1e3a5f}
+.ri.sel,.ri:hover{background:#1d3a5f;border-color:#3b82f6}
+.ic.sel{outline:2px solid #3b82f6}
+.ic:hover{filter:brightness(1.08)}
+#inc-pan{max-height:calc(100vh - 100px);overflow-y:auto}
+.ckg{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:7px;margin-top:12px}
+.cki{background:#0f172a;border-radius:7px;padding:9px 11px;border-left:3px solid #22c55e;display:flex;gap:8px}
+.cki.nok{border-left-color:#ef4444}
+.bw{flex:1;background:#0f172a;border-radius:3px;height:6px;overflow:hidden}
+.bi{height:100%;border-radius:3px}
+.cc{position:relative;width:100%}
+.pb{padding:7px 13px;border-radius:7px;border:none;font-size:12px;font-weight:600;background:#1e293b;color:#ffffff}
+.pb.active{background:#3b82f6;color:#fff}
+.cb{padding:4px 10px;border-radius:5px;border:1px solid transparent;font-size:11px;background:#1e293b;color:#ffffff;margin:3px}
+.nos{background:#1e293b;border-radius:12px;padding:40px;text-align:center}
+.pg{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:900px){.pg{grid-template-columns:1fr}}
+.mr{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:8px;background:#0f172a;border-radius:8px;margin-bottom:4px}
+.mra{font-size:12px;color:#a855f7;font-weight:600}.mrb{font-size:12px;color:#3b82f6}
+.hs{background:#1e293b;color:#e2e8f0;border:1px solid #334155;border-radius:7px;padding:6px 10px;font-size:12px;outline:none}
+.nr{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.nb{padding:4px 12px;border-radius:6px;border:1px solid #334155;background:#1e293b;color:#ffffff;font-size:13px}
+.nl{font-size:12px;color:#e2e8f0;font-weight:600;flex:1;text-align:center}
+.stab{padding:8px 18px;border-radius:8px 8px 0 0;border:none;cursor:pointer;font-size:13px;font-weight:600;background:transparent;color:#ffffff;border-bottom:2px solid transparent}
+.stab.active{background:#1e293b;color:#a855f7;border-bottom-color:#a855f7}
+</style>
+</head>
+<body>
+<div id="fab-start"><div class="box">
+  <div style="font-size:34px;margin-bottom:8px">🚜</div>
+  <h2>¿Qué fábrica quieres ver?</h2>
+  <p>Se mostrarán solo sus datos y los archivos que le corresponden.</p>
+  <div class="opts">
+    <button class="g" data-f="A Grela" onclick="pickFab(this.dataset.f)">A Grela<small>Carretillas y transpalés</small></button>
+    <button class="m" data-f="Moras" onclick="pickFab(this.dataset.f)">Moras<small>Carretillas y transpalés</small></button>
+    <button class="t" data-f="Todas" onclick="pickFab(this.dataset.f)">Ambas<small>Vista conjunta</small></button>
+  </div>
+</div></div>
+<div id="stk-hdr" style="position:sticky;top:0;z-index:60;background:#0f172a">
+<div class="hdr">
+  <div class="hico">🚜</div>
+  <div><div class="htit">Dashboard Carretillas</div><div class="hsub" id="hsub">Sin datos cargados</div></div>
+  <button class="fbtn" id="btn-fab" title="Cambiar de fábrica" onclick="showFabStart()" style="background:#334155;color:#fff;margin-left:6px">🏭 Fábrica</button>
+  <div class="fabsel hid" id="fab-sel" title="Fábrica: filtra todas las pestañas"></div>
+  <div class="hbts">
+    <label class="fbtn" id="btn-cl" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff;box-shadow:0 4px 14px #3b82f644">📂 Checklist Excel<input type="file" id="inp-cl" accept=".xlsx,.xlsm,.xls"></label>
+    <label class="fbtn" id="btn-tp" style="background:linear-gradient(135deg,#0ea5e9,#0369a1);color:#fff;box-shadow:0 4px 14px #0ea5e944">🛒 Checklist Transpalés<input type="file" id="inp-tp" accept=".xlsx,.xlsm,.xls"></label>
+    <label class="fbtn" id="btn-tn" style="background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;box-shadow:0 4px 14px #a855f744">📅 Turnos A Grela<input type="file" id="inp-tn" accept=".xlsx,.xlsm,.xls"></label>
+    <label class="fbtn" id="btn-tn2" style="background:linear-gradient(135deg,#f97316,#ea580c);color:#fff;box-shadow:0 4px 14px #f9731644">📅 Turnos Moras<input type="file" id="inp-tn2" accept=".xlsx,.xlsm,.xls"></label>
+    <label class="fbtn" id="btn-rp" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff;box-shadow:0 4px 14px #10b98144">🔧 Reparaciones A Grela<input type="file" id="inp-rp" accept=".xlsx,.xlsm,.xls"></label>
+    <label class="fbtn" id="btn-rpm" style="background:linear-gradient(135deg,#eab308,#a16207);color:#fff;box-shadow:0 4px 14px #eab30844">🔧 Reparaciones Moras<input type="file" id="inp-rpm" accept=".xlsx,.xlsm,.xls"></label>
+    <button class="fbtn hid" id="btn-reload" title="Vuelve a leer los archivos recordados" style="background:linear-gradient(135deg,#64748b,#475569);color:#fff">↻ Recargar archivos</button>
+  </div>
+</div>
+<div class="tabs hid" id="tabs">
+  <button class="tab active" data-tab="reg">📋 Registros</button>
+  <button class="tab" data-tab="pen">📋 Registros Turnos</button>
+  <button class="tab" data-tab="inc">⚠️ Incidencias</button>
+  <button class="tab" data-tab="hor">📈 Horómetros</button>
+  <button class="tab" data-tab="ana">📊 Análisis</button>
+  <button class="tab" data-tab="cfg">⚙️ Configuración</button>
+</div>
+</div>
+
+<div class="con">
+  <div class="upro" id="upro"><div class="uico">📊</div><div><div style="font-size:19px;font-weight:700;color:#f1f5f9">Sube tu Excel de checklist</div><div style="font-size:13px;color:#ffffff;margin-top:6px">Y opcionalmente el Excel de Turnos para ver quién no registró</div></div></div>
+  <div class="hid" id="lod" style="text-align:center;padding:60px;color:#ffffff">Cargando...</div>
+
+  <div id="tab-reg" class="hid">
+    <div id="reg-stky" style="position:sticky;z-index:40;background:#0f172a;padding-top:2px;margin-top:-2px">
+    <div class="kgrd" id="kpi-reg"></div>
+    <div class="flts">
+      <div class="fg"><span class="fl">Fecha</span><input type="date" class="fd" id="r-fecha" onchange="regPage=0;rReg()"></div>
+      <div class="fg"><span class="fl">Fábrica</span><select class="fi" id="r-fab" onchange="regPage=0;rReg()"></select></div>
+      <div class="fg"><span class="fl">Turno</span><select class="fi" id="r-tur" onchange="regPage=0;rReg()"><option value="">Todos</option><option>Mañana</option><option>Tarde</option><option>Noche</option></select></div>
+      <div class="fg"><span class="fl">Carretilla</span><select class="fi" id="r-car" onchange="regPage=0;rReg()"></select></div>
+      <div class="fg"><span class="fl">Usuario</span><select class="fi" id="r-usr" onchange="regPage=0;rReg()"></select></div>
+      <div class="fg"><span class="fl">Pendiente</span><select class="fi" id="r-pen" onchange="regPage=0;rReg()"><option value="">Todos</option><option value="si">⚠️ Sí</option><option value="no">No</option></select></div>
+      <div class="fg"><span class="fl">Resultado</span><select class="fi" id="r-res" onchange="regPage=0;rReg()"><option value="">Todos</option><option value="TODO OK">✅ OK</option><option value="PENDIENTE">🔧 Pendiente</option><option value="LEVE">⚠️ Leve</option><option value="GRAVE">🔴 Grave</option></select></div>
+      <button class="bcl" onclick="clReg()">Limpiar</button>
+    </div>
+    </div>
+    <div class="rgrd" id="reg-grid">
+      <div style="min-width:0">
+        <div class="tw"><table style="table-layout:fixed"><colgroup><col style="width:10%"><col style="width:9%"><col style="width:8%"><col style="width:23%"><col style="width:28%"><col style="width:8%"><col style="width:14%"></colgroup><thead id="reg-thead" style="position:sticky;z-index:30"><tr><th>Fecha</th><th>Fábrica</th><th>Turno</th><th>Carretilla</th><th>Usuario</th><th>Pend.</th><th>Resultado</th></tr></thead><tbody id="tb-reg"></tbody></table></div>
+    <div id="reg-more" class="hid" style="padding:12px;display:flex;align-items:center;justify-content:center;gap:12px;color:#ffffff;font-size:12px">
+      <button class="nb" id="reg-prev" onclick="regPg(-1)">◀</button>
+      <span id="reg-lbl"></span>
+      <button class="nb" id="reg-next" onclick="regPg(1)">▶</button>
+    </div>
+      </div>
+      <div id="reg-pan" class="card" style="min-height:260px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;position:sticky">Selecciona un registro de la tabla</div>
+    </div>
+  </div>
+
+  <div id="tab-pen" class="hid">
+    <div class="nos hid" id="pen-nos"><div style="font-size:36px;margin-bottom:14px">📅</div><div style="font-size:17px;font-weight:700;color:#f1f5f9">Sube el archivo de Turnos</div><div style="color:#ffffff;margin-top:8px">Para ver el control de asistencia</div></div>
+    <div id="pen-bdy" class="hid">
+      <!-- Sub-tabs: Registros | Seguimiento -->
+      <div style="display:flex;gap:4px;margin-bottom:16px;border-bottom:1px solid #1e293b">
+        <button class="stab active" id="stab-reg" onclick="showSub('reg')">📋 Registros</button>
+        <button class="stab" id="stab-seg" onclick="showSub('seg')">👤 Seguimiento</button>
+      </div>
+
+      <!-- SUB-TAB: REGISTROS -->
+      <div id="sub-reg">
+        <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;align-items:flex-end">
+          <div class="fg"><span class="fl">Fecha</span><input type="date" class="fd" id="p-fec" onchange="rPen()"></div>
+          <div class="fg"><span class="fl">Turno</span><select class="fi" id="p-tur" onchange="rPen()"><option>Mañana</option><option>Tarde</option><option>Noche</option></select></div>
+          <div class="fg"><span class="fl">Fábrica</span><select class="fi" id="p-fab" onchange="rPen()"></select></div>
+        </div>
+        <div style="display:grid;grid-template-columns:minmax(280px,1fr) minmax(280px,1fr);gap:16px;align-items:start">
+          <div id="pen-sin" style="max-height:calc(100vh - 300px);overflow-y:auto"></div>
+          <div id="pen-con" style="max-height:calc(100vh - 300px);overflow-y:auto"></div>
+        </div>
+      </div>
+
+      <!-- SUB-TAB: SEGUIMIENTO -->
+      <div id="sub-seg" class="hid">
+        <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center;flex-wrap:wrap">
+          <div style="font-size:13px;font-weight:600;color:#ffffff">👤 Seguimiento de actividad</div>
+          <div style="display:flex;gap:5px;margin-left:auto">
+            <button class="pb active" id="act-s" onclick="setAct('semana')">Semana</button>
+            <button class="pb" id="act-m" onclick="setAct('mes')">Mes</button>
+            <button class="pb" id="act-y" onclick="setAct('año')">Año</button>
+          </div>
+          <select class="fi" id="act-tur" onchange="rAct()" style="font-size:11px;padding:5px 8px"><option value="">Todos</option><option>Mañana</option><option>Tarde</option><option>Noche</option></select>
+          <select class="fi" id="act-fab" onchange="rAct()" style="font-size:11px;padding:5px 8px"></select>
+          <select class="fi" id="act-sort" onchange="rAct()" style="font-size:11px;padding:5px 8px" title="Ordenar"><option value="pct-asc">% ↑ menor→mayor</option><option value="pct-desc">% ↓ mayor→menor</option><option value="mis-desc">Más faltas</option><option value="name">Nombre A-Z</option></select>
+        </div>
+        <div class="nr"><button class="nb" onclick="actOff--;rAct()">◀</button><span class="nl" id="act-lbl"></span><button class="nb" onclick="actOff++;rAct()">▶</button></div>
+        <div id="act-pan" style="max-height:calc(100vh - 240px);overflow-y:auto"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-inc" class="hid">
+    <div style="display:flex;gap:2px;margin-bottom:2px">
+      <button class="stab active" id="stab-inc-todas" onclick="showIncSub('todas')">📋 Todas</button>
+      <button class="stab" id="stab-inc-rec" onclick="showIncSub('rec')">🔁 Recurrentes</button>
+      <button class="stab" id="stab-inc-desc" onclick="showIncSub('desc')">⚠️ Descoordinación</button>
+    </div>
+    <div id="isub-todas">
+      <div class="flts" style="margin-bottom:18px;align-items:center">
+        <div style="background:#1e293b;border-radius:10px;padding:12px 20px;border-left:3px solid #ef4444;display:flex;align-items:center;gap:10px"><span style="font-size:26px;font-weight:800;color:#ef4444" id="inc-cnt">0</span><span style="font-size:12px;color:#ffffff">con incidencias pendientes</span></div>
+        <div class="fg"><span class="fl">Fábrica</span><select class="fi" id="i-fab" onchange="rInc()"></select></div>
+        <div class="fg"><span class="fl">Tipo</span><select class="fi" id="i-tipo" onchange="rInc()"><option value="">Todos</option></select></div>
+        <label style="display:flex;align-items:center;gap:7px;cursor:pointer;color:#ffffff;font-size:13px"><input type="checkbox" id="i-solo" checked onchange="rInc()" style="accent-color:#3b82f6;width:14px;height:14px"> Solo pendientes</label>
+      </div>
+      <div class="rgrd" id="inc-grid">
+        <div style="min-width:0"><div class="g3" id="inc-cds"></div></div>
+        <div id="inc-pan" class="card" style="min-height:260px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;position:sticky">Selecciona una carretilla para ver sus incidencias</div>
+      </div>
+    </div>
+    <div id="isub-rec" class="hid">
+      <div class="flts" style="margin-bottom:18px;align-items:center">
+        <div class="fg"><span class="fl">Fábrica</span><select class="fi" id="ir-fab" onchange="rRec()"></select></div>
+        <div class="fg"><span class="fl">Tipo</span><select class="fi" id="ir-tipo" onchange="rRec()"><option value="">Todos</option></select></div>
+        <div class="fg"><span class="fl">Se repite al menos</span><select class="fi" id="ir-umb" onchange="rRec()"><option value="2">2 veces</option><option value="3" selected>3 veces</option><option value="5">5 veces</option><option value="8">8 veces</option></select></div>
+      </div>
+      <div id="rec-lst"></div>
+    </div>
+    <div id="isub-desc" class="hid">
+      <div class="nos hid" id="desc-nos"><div style="font-size:36px;margin-bottom:14px">🔧</div><div style="font-size:17px;font-weight:700;color:#f1f5f9">Sube el Excel de Reparaciones</div><div style="color:#ffffff;margin-top:8px">Para comparar el checklist con lo registrado en Incidencias</div></div>
+      <div id="desc-bdy" class="hid">
+        <div class="flts" style="margin-bottom:14px;align-items:center">
+          <div style="background:#1e293b;border-radius:10px;padding:12px 20px;border-left:3px solid #f59e0b;display:flex;align-items:center;gap:10px"><span style="font-size:26px;font-weight:800;color:#f59e0b" id="desc-cnt">0</span><span style="font-size:12px;color:#ffffff">sin apunte en Incidencias</span></div>
+          <div class="fg"><span class="fl">Fábrica</span><select class="fi" id="id-fab" onchange="rDesc()"></select></div>
+        </div>
+        <div style="font-size:11px;color:#ffffff;margin-bottom:14px;line-height:1.6;background:#1e293b;border-radius:8px;padding:10px 14px">
+          ℹ️ Cruce por <strong>carretilla + fecha</strong> (nunca por texto): si una carretilla tiene varias incidencias el mismo día, puede colarse algún falso negativo. Solo cubre carretillas con código numérico (Cx) o Still/Steel — transpalés, apiladores y equipos de batería aún no tienen equivalencia para cruzar automáticamente, así que no aparecen aquí.
+        </div>
+        <div id="desc-lst"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-hor" class="hid">
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px">
+      <div style="display:flex;gap:6px" id="hor-pb"><button class="pb active" data-p="semana">Semana</button><button class="pb" data-p="mes">Mes</button><button class="pb" data-p="6meses">6 meses</button><button class="pb" data-p="año">Año</button></div>
+      <div id="hor-rng"></div>
+      <div class="fg" style="margin-left:8px"><span class="fl">Fábrica</span><select class="fi hs" id="h-fab" onchange="selC=[];rHor()"></select></div>
+    </div>
+    <div style="margin-bottom:14px"><div style="font-size:10px;color:#ffffff;margin-bottom:5px">Carretillas (vacío=todas):</div><div id="h-cars"></div></div>
+    <div class="card"><div class="ctit" id="h-tit">Horómetro</div><div class="cc" style="height:380px"><canvas id="ch-hor"></canvas></div></div>
+  </div>
+
+  <div id="tab-ana" class="hid">
+    <div class="flts" style="margin-bottom:18px;align-items:center">
+      <div class="fg"><span class="fl">Fábrica</span><select class="fi" id="a-fab" onchange="rAna()"></select></div>
+      <span id="a-cnt" style="font-size:12px;color:#ffffff"></span>
+    </div>
+    <div class="g2">
+      <div class="card"><div class="ctit">📊 Registros por turno</div><div class="cc" style="height:200px"><canvas id="ch-tur"></canvas></div></div>
+      <div class="card"><div class="ctit">🏭 Registros por fábrica</div><div class="cc" style="height:200px"><canvas id="ch-fab"></canvas></div></div>
+      <div class="card" style="grid-column:1/-1"><div class="ctit">📅 Evolución diaria — últimos 30 días</div><div class="cc" style="height:200px"><canvas id="ch-evol"></canvas></div></div>
+      <div class="card"><div class="ctit">🔧 Elementos con más fallos</div><div id="a-fal"></div></div>
+      <div class="card"><div class="ctit">🏆 Carretillas con más incidencias</div><div id="a-rnk"></div></div>
+      <div class="card">
+        <div class="ctit">👤 Actividad operarios</div>
+        <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;align-items:center">
+          <button class="pb active" id="op-s" onclick="setOp('semana')">Semana</button>
+          <button class="pb" id="op-m" onclick="setOp('mes')">Mes</button>
+          <select class="fi" id="op-tur" onchange="rOp()" style="font-size:11px;padding:4px 8px"><option value="">Todos</option><option>Mañana</option><option>Tarde</option><option>Noche</option></select>
+        </div>
+        <div class="nr"><button class="nb" onclick="opOff--;rOp()">◀</button><span class="nl" id="op-lbl"></span><button class="nb" onclick="opOff++;rOp()">▶</button></div>
+        <div id="op-pan" style="max-height:320px;overflow-y:auto"></div>
+      </div>
+      <div class="card"><div class="ctit">📉 Usuarios menos activos</div><div id="a-men"></div></div>
+    </div>
+  </div>
+
+  <div id="tab-cfg" class="hid">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+      <div><div class="card">
+        <div class="ctit">👥 Equivalencias de nombres</div>
+        <div style="font-size:12px;color:#ffffff;margin-bottom:16px;line-height:1.7">Las del archivo vienen de serie. Si subes un Excel nuevo, se guarda en este navegador y sustituye a las de serie (en otro PC o navegador hay que subirlo otra vez).<br>Para actualizar sube un nuevo Excel con columnas <strong style="color:#a855f7">Nombre en Turnos</strong> | <strong style="color:#3b82f6">Nombre en Checklist</strong>.</div>
+        <div style="margin-bottom:14px"><label class="fbtn" style="background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;width:100%;justify-content:center">📥 Actualizar Excel de equivalencias<input type="file" id="inp-eq" accept=".xlsx,.xls" onchange="loadEq(this)"></label><button class="fbtn" style="background:#334155;color:#fff;width:100%;justify-content:center;margin-top:8px" onclick="resetEq()">↩ Volver a las equivalencias de serie</button></div>
+        <div id="eq-msg" class="hid" style="padding:10px;background:#22c55e22;border-radius:8px;color:#86efac;font-size:12px;text-align:center;margin-bottom:14px"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px;padding:8px 10px;background:#1e3a5f;border-radius:8px"><div class="fl" style="color:#a855f7">Nombre en Turnos</div><div class="fl" style="color:#3b82f6">Nombre en Checklist</div></div>
+        <div id="map-lst" style="max-height:440px;overflow-y:auto;display:flex;flex-direction:column;gap:4px"></div>
+      </div></div>
+      <div><div class="card">
+        <div class="ctit">ℹ️ Información</div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="background:#0f172a;border-radius:8px;padding:14px"><div class="fl" style="margin-bottom:4px">EQUIVALENCIAS</div><div style="font-size:28px;font-weight:800;color:#a855f7" id="cfg-eq">49</div></div>
+          <div style="background:#0f172a;border-radius:8px;padding:14px"><div class="fl" style="margin-bottom:4px">REGISTROS</div><div style="font-size:28px;font-weight:800;color:#3b82f6" id="cfg-reg">—</div></div>
+          <div style="background:#0f172a;border-radius:8px;padding:14px"><div class="fl" style="margin-bottom:4px">VERSIÓN</div><div style="font-size:13px;font-weight:600;color:#ffffff">v1.3 · Dashboard Carretillas</div></div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+var DATA=[],SCHED=null,LEAVE={},TURNOS_LOADED={},TURNOS_FAB_DET=null,CHS={},selC=[],horP='semana',regR=[],regPage=0,incC=[],REPARS=[],DATA_C=[],DATA_T=[],REPARS_BY={};
+// Bajas/Permisos/Vacaciones/Dias libres: mismo bloque de color e inicial en
+// todo el dashboard para no repetir la paleta en cada sitio que lo pinte.
+var LEAVE_TYPES=[
+  {lbl:'BAJAS',code:'B',color:'#3b82f6',name:'Baja'},
+  {lbl:'PERMISOS',code:'P',color:'#94a3b8',name:'Permiso'},
+  {lbl:'VACACIONES',code:'V',color:'#15803d',name:'Vacaciones'},
+  {lbl:'DIAS LIBRES',code:'DL',color:'#eab308',name:'Día libre'}
+];
+var horS='',horM='',horA='',horD='',horH='';
+var actP='semana',actOff=0,opP='semana',opOff=0;
+// Version ligera para JJEE y Aux: LIGHT=true (sin Horometros ni Analisis, dia actual por
+// defecto y contadores compactos en la barra de pestanas). El resto del codigo es el mismo.
+var LIGHT=true;
+var TABS=LIGHT?['reg','pen','inc','cfg']:['reg','pen','inc','hor','ana','cfg'];
+function isoOf(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
+function todayISO(){return isoOf(new Date());}
+// Turno en vigor por la hora: Manana 06-14, Tarde 14-22, Noche 22-06.
+function currentShift(){var h=new Date().getHours();return h>=6&&h<14?'Mañana':h>=14&&h<22?'Tarde':'Noche';}
+// Fecha de cuadrante del turno en vigor: la Noche que empieza a las 22:00 pertenece al dia siguiente.
+function shiftDateISO(){var d=new Date();if(currentShift()==='Noche'&&d.getHours()>=22)d.setDate(d.getDate()+1);return isoOf(d);}
+var DIAS=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+var MES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+var CLR=['#3b82f6','#22c55e','#f59e0b','#ef4444','#a855f7','#06b6d4','#f97316','#84cc16','#ec4899','#14b8a6'];
+
+// Version publica: sin la tabla de nombres. Cada equipo la carga una vez desde Configuracion > "Actualizar Excel de equivalencias" y queda guardada en su navegador.
+var NM={};
+var NM_ORIG=NM;
+// Las equivalencias subidas desde Configuracion se guardan en este navegador
+// (localStorage) y se aplican al abrir, antes de cargar ningun Excel.
+try{var _nmS=JSON.parse(localStorage.getItem('dash_nm')||'null');if(_nmS&&typeof _nmS==='object'&&Object.keys(_nmS).length)NM=_nmS;}catch(e){}
+var CC=["¿Las horquillas están sin grietas, deformaciones ni desgaste excesivo?", "¿El sistema de elevación sube y baja correctamente?", "¿Hay ruidos extraños al elevar o bajar el mástil?", "¿Hay fugas de aceite bajo el mástil o en los cilindros?", "¿El volante responde sin holguras excesivas?", "¿El freno de servicio funciona correctamente?", "¿El freno de estacionamiento bloquea la carretilla?", "¿Las ruedas están sin cortes graves ni desgaste extremo?", "¿Funcionan las luces delanteras, traseras y giratoria?", "¿Funciona la luz/avisador acustico de marcha atrás?", "¿Funciona la bocina?", "¿El cinturón de seguridad está en buen estado y se abrocha?", "¿Los espejos/cristales están limpios y permiten buena visibilidad?", "¿El puesto de conducción está limpio y sin derrames de aceite o producto?"];
+
+// Preguntas propias del checklist de transpales (cabeceras ya recortadas: el Forms
+// las trae con espacios al final). Las demas (horquillas, elevacion, ruedas, bocina,
+// indicador de carga...) tienen el mismo texto que las de carretilla y se reutilizan.
+var CT=["Nivel de agua de los vasos de la batería", "¿Hay signos de fuga de electrolito (ácido) en la batería o bajo el transpalé?", "Estado del conector y cable de carga", "¿Hay fugas de aceite hidráulico bajo las horquillas o en el cuerpo del transpalé?", "¿El timón gira correctamente sin resistencia excesiva ni golpes?", "¿El freno de hombre muerto funciona correctamente?", "¿Los botones de mando del timón responden correctamente? (marcha adelante, atrás, elevación, descenso)", "¿El puesto de conducción y zona de agarre del timón están limpios y sin derrames?"];
+
+function p2(n){return String(n).padStart(2,'0');}
+function fmtD(d){return d.toLocaleDateString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric'});}
+function toISO(d){return d.getUTCFullYear()+'-'+p2(d.getUTCMonth()+1)+'-'+p2(d.getUTCDate());}
+// Lunes de la semana ISO a la que pertenece iso (YYYY-MM-DD). Se usa para
+// que "turno habitual" se calcule semana a semana, no sobre todo el mes de
+// golpe - si no, en la vista Mes una racha normal de una semana entera en
+// otro turno se marcaba entera como "cambio" solo por ser minoria frente al
+// resto del mes.
+function weekKeyOf(iso){
+  var dt=new Date(iso+'T00:00:00Z');
+  var dow=dt.getUTCDay();var isoDow=dow===0?7:dow;
+  dt.setUTCDate(dt.getUTCDate()-(isoDow-1));
+  return toISO(dt);
+}
+function exD(v){
+  if(v instanceof Date)return v;
+  if(typeof v==='number'&&v>40000)return new Date((v-25569)*86400000);
+  if(typeof v==='string'&&v.trim()){
+    var s=v.trim();
+    // dd/mm/yyyy
+    var m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+    if(m)return new Date(Date.UTC(+m[3],+m[2]-1,+m[1]));
+    // yyyy-mm-dd
+    if(s.match(/^\d{4}-\d{2}-\d{2}/))return new Date(s);
+  }
+  return null;
+}
+function norm(s){
+  if(!s)return'';s=String(s).toUpperCase().trim();
+  var r={'À':'A','Á':'A','Â':'A','Ã':'A','Ä':'A','Å':'A','È':'E','É':'E','Ê':'E','Ë':'E','Ì':'I','Í':'I','Î':'I','Ï':'I','Ò':'O','Ó':'O','Ô':'O','Õ':'O','Ö':'O','Ø':'O','Ù':'U','Ú':'U','Û':'U','Ü':'U','Ñ':'N','Ç':'C','Ý':'Y','Ÿ':'Y'};
+  Object.keys(r).forEach(function(k){s=s.split(k).join(r[k]);});
+  try{s=s.normalize('NFD').replace(/[\u0300-\u036f]/g,'');}catch(e){}
+  return s.replace(/\s+/g,' ').trim();
+}
+function tok(s){return norm(s).split(/[\s.]+/).filter(Boolean);}
+function nmatch(full,short){
+  var fn=norm(full),sn=norm(short);if(fn===sn)return true;
+  var st=tok(short),ft=tok(full);if(!st.length)return false;
+  return st.every(function(t){return ft.some(function(w){return t.length===1?w.startsWith(t):(w.startsWith(t)||t.startsWith(w));});});
+}
+function wReg(sn,rSet){
+  var k=norm(sn),mp=NM[k];
+  if(mp)return rSet.has(mp);
+  var f=false;rSet.forEach(function(rn){if(nmatch(rn,k))f=true;});return f;
+}
+function rl(r){if(r.includes('TODO OK'))return'✅ OK';if(r.includes('PENDIENTE'))return'🔧 Pendiente';if(r.includes('LEVE'))return'⚠️ Leve';if(r.includes('GRAVE'))return'🔴 Grave';return r.slice(0,18);}
+function rc(r){if(r.includes('TODO OK'))return'#22c55e';if(r.includes('PENDIENTE'))return'#f59e0b';if(r.includes('LEVE'))return'#f97316';if(r.includes('GRAVE'))return'#ef4444';return'#94a3b8';}
+function tb(t){var c=t==='Mañana'?['#f59e0b22','#f59e0b']:t==='Tarde'?['#3b82f622','#3b82f6']:['#a855f722','#a855f7'];return'<span style="background:'+c[0]+';color:'+c[1]+';padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700">'+(t||'')+'</span>';}
+function fb(f){var c=f==='A Grela'?['#06b6d422','#06b6d4']:f==='Moras'?['#f9731622','#f97316']:['#64748b22','#64748b'];return'<span style="background:'+c[0]+';color:'+c[1]+';padding:2px 6px;border-radius:4px;font-size:10px;font-weight:600">'+(f||'?')+'</span>';}
+function gv(id){var e=document.getElementById(id);return e?e.value:'';}
+function dch(id){if(CHS[id]){CHS[id].destroy();delete CHS[id];}}
+function uniq(a){return a.filter(function(v,i,ar){return ar.indexOf(v)===i;});}
+// Preguntas de bateria/carga que no estaban en CC y por eso no se veian en Detalle.
+var CB=["¿Que muestra el indicador de carga?","¿La puerta de la bateria funciona correctamente?","¿Cambiaste la batería durante el turno anterior?","En el último cambio de batería, ¿cómo estaban los niveles de agua?","¿Has notificado al JJEE? (responde solo si marcaste incidencia GRAVE)"];
+// Estado de una respuesta. Ojo: hay respuestas informativas ("Sí, 1 vez",
+// "No aplica...") que no llevan simbolo y no son ni bien ni mal.
+function cSt(v){
+  var t=String(v||'').trim();
+  if(t.indexOf('\u2717\u2717')===0)return'gr';
+  if(t.charAt(0)==='\u2717')return'nk';
+  if(t.charAt(0)==='\u2713')return'ok';
+  return'in';
+}
+function cIco(s){return s==='ok'?'\u2705':s==='gr'?'\ud83d\udd34':s==='nk'?'\u274c':'\u2139\ufe0f';}
+function cCol(s){return s==='ok'?'#86efac':s==='gr'?'#fca5a5':s==='nk'?'#fca5a5':'#cbd5e1';}
+function cTxt(v){
+  var t=String(v||'').trim();
+  var o=t.replace(/^[\u2713\u2717]+\s*(NO OK|OK|GRAVE)?\s*[\u2013-]?\s*/,'');
+  // Hay respuestas que son solo "\u2713 OK" sin texto detras: no las dejamos vacias.
+  if(o)return o;
+  var s=cSt(v);
+  return s==='ok'?'OK':s==='gr'?'GRAVE':s==='nk'?'NO OK':t;
+}
+function srtC(a){return a.slice().sort(function(a,b){var na=parseInt(a.replace(/\D/g,''))||0,nb=parseInt(b.replace(/\D/g,''))||0;return na!==nb?na-nb:a.localeCompare(b);});}
+// Tipo de vehiculo deducido del nombre. Preparado para los transpales futuros:
+// basta con que el nombre lleve la palabra clave (montado / apilador / bateria)
+// y aparecera solo en el filtro y en el orden, sin tocar codigo.
+var TIPOS=[
+  {k:'Doble',        re:/DOBLE/,                  ord:0},
+  {k:'Sencilla',     re:/SENCILLA/,               ord:1},
+  {k:'T. montado',   re:/MONTAD/,                 ord:2},
+  {k:'Apilador',     re:/APILAD/,                 ord:3},
+  {k:'T. baterías',  re:/BATER/,                  ord:4},
+  {k:'Transpalé',    re:/TRANSPAL|TRASPAL/,       ord:5}
+];
+function cTipo(name){
+  var u=norm(String(name||''));
+  for(var i=0;i<TIPOS.length;i++){if(TIPOS[i].re.test(u))return TIPOS[i].k;}
+  return 'Otros';
+}
+function cOrd(name){
+  var t=cTipo(name);
+  for(var i=0;i<TIPOS.length;i++){if(TIPOS[i].k===t)return TIPOS[i].ord;}
+  return 9;
+}
+// Ordena por tipo y, dentro del tipo, por numero. Los que no llevan numero
+// (Steel, Still...) van al final de su grupo, por orden alfabetico.
+function srtT(a){return a.slice().sort(function(x,y){
+  var ox=cOrd(x),oy=cOrd(y); if(ox!==oy)return ox-oy;
+  var mx=String(x).match(/\d+/),my=String(y).match(/\d+/);
+  var nx=mx?parseInt(mx[0]):999999,ny=my?parseInt(my[0]):999999;
+  if(nx!==ny)return nx-ny;
+  return String(x).localeCompare(String(y));
+});}
+function monOf(d){
+  var y=d.getFullYear(),m=d.getMonth(),day=d.getDate();
+  var dt=new Date(Date.UTC(y,m,day));
+  var dow=dt.getUTCDay();
+  dt.setUTCDate(dt.getUTCDate()-(dow===0?6:dow-1));
+  return dt;
+}
+function addD(d,n){var dt=new Date(d);dt.setUTCDate(dt.getUTCDate()+n);return dt;}
+function dStr(iso){var dt=new Date(iso+'T00:00:00Z');return DIAS[dt.getUTCDay()]+' '+p2(dt.getUTCDate())+'/'+p2(dt.getUTCMonth()+1);}
+function dayOfWeek(iso){var dt=new Date(iso+'T00:00:00Z');return dt.getUTCDay();}  // 0=Dom,1=Lun...6=Sáb
+
+function parseRows(rows){
+  return rows.filter(function(r){var c=r['Carretilla Unificada'];return c&&c!=='0'&&c!==0;}).map(function(r){
+    var ini=exD(r['Hora de inicio'])||new Date();
+    var fec=exD(r['Fecha'])||ini;
+    var o={};Object.keys(r).forEach(function(k){o[k]=r[k];});
+    o._ini=ini;o._fec=fec;
+    o._tur=String(r['Turno']||'').trim();
+    o._hor=parseFloat(r['Lectura del horómetro (horas)'])||null;
+    o._fStr=fmtD(fec);o._fISO=fec.getFullYear()+'-'+p2(fec.getMonth()+1)+'-'+p2(fec.getDate());
+    // Effective shift date: for Noche, a check-in from 21:00 onwards belongs to
+    // the NEXT day's night shift (night crosses midnight: Sun 22:00 -> Mon 06:00
+    // is Monday's night). Uses UTC hours to match how XLSX reads Forms timestamps.
+    o._fISOt=o._fISO;
+    if(o._tur==='Noche'){
+      // Use LOCAL wall-clock hour: XLSX preserves the Forms timestamp's wall time
+      // in local hours (getHours), while getUTCHours would shift by the browser's
+      // timezone offset and break the rule in Spain (UTC+1/+2).
+      var hr=fec.getHours();
+      if(hr>=21){
+        // Registered 21:00-23:59 -> belongs to NEXT day's night shift.
+        // Build the next-day ISO from the wall-clock date parts.
+        var nd=new Date(fec.getFullYear(),fec.getMonth(),fec.getDate()+1);
+        o._fISOt=nd.getFullYear()+'-'+p2(nd.getMonth()+1)+'-'+p2(nd.getDate());
+      }
+    }
+    // Dos opciones del Forms vienen con un espacio delante del simbolo
+    // (" \u2713 OK - ..."), lo que rompia startsWith('\u2713') y las pintaba
+    // siempre como fallo. Normalizamos aqui: afecta a Detalle y a Analisis.
+    CC.forEach(function(cn){if(o[cn]!==undefined&&o[cn]!==null)o[cn]=String(o[cn]).trim();});
+    o._car=String(r['Carretilla Unificada']||'').trim();
+    o._res=String(r['RESULTADO GLOBAL DE LA INSPECCIÓN']||'').trim();
+    o._nom=String(r['Nombre']||'').trim();
+    o._nomN=norm(String(r['Nombre']||''));
+    o._fab=String(r['Fabrica']||'').trim()||'Sin asignar';
+    o._ip=String(r['¿Hay alguna incidencia ya reportada y pendiente de reparación en esta carretilla?']||'').includes('Sí');
+    o._id=String(r['¿Cuál es la incidencia pendiente?']||'').trim();
+    return o;
+  });
+}
+
+// ── FILE HANDLERS ─────────────────────────────────────────────────────────────
+function loadChecklist(f){
+ return new Promise(function(done){
+  document.getElementById('lod').classList.remove('hid');
+  document.getElementById('upro').classList.add('hid');
+  var fr=new FileReader();
+  fr.onload=function(ev){
+    try{
+      var wb=XLSX.read(ev.target.result,{type:'binary',cellDates:true});
+      DATA_C=parseRows(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:null}));
+      rebuildData();
+      initApp();
+    }catch(err){alert('Error checklist: '+err.message);}
+    document.getElementById('lod').classList.add('hid');
+    done();
+  };
+  fr.readAsBinaryString(f);
+ });
+}
+document.getElementById('inp-cl').addEventListener('change',function(e){var f=e.target.files[0];if(f)loadChecklist(f);});
+
+// ── CHECKLIST DE TRANSPALES (Forms aparte, mismo formato de salida que carretillas) ──
+// El Forms tiene dos columnas de numero ("Número de transpalé A Grela" / "... Moras"),
+// segun la fabrica elegida solo una viene rellena. Todo se recorta (cabeceras y valores)
+// porque el Forms deja espacios al final.
+function rebuildData(){
+  DATA=DATA_C.concat(DATA_T);
+  rematchRepars();
+}
+function parseTranspales(rows){
+  var out=[];
+  rows.forEach(function(raw){
+    var t={};Object.keys(raw).forEach(function(k){t[k.trim()]=raw[k];});
+    var fab=String(t['Fabrica']||'').trim();
+    var cg=String(t['Número de transpalé A Grela']||'').trim(),cm=String(t['Número de transpalé Moras']||'').trim();
+    var code=norm(fab)==='MORAS'?(cm||cg):(cg||cm);
+    if(!code)return;
+    CT.concat(CC,CB).forEach(function(c){if(t[c]!==undefined&&t[c]!==null)t[c]=String(t[c]).trim();});
+    t['Carretilla Unificada']=/TRANSPAL|TRASPAL/.test(norm(code))?code:'Transpalé '+code;
+    t['Fecha']=t['Hora de inicio'];
+    t['¿Hay alguna incidencia ya reportada y pendiente de reparación en esta carretilla?']=t['¿Hay alguna incidencia ya reportada y pendiente de reparación?'];
+    var o=parseRows([t])[0];
+    if(o){o._tp=true;o._code=code;out.push(o);}
+  });
+  return out;
+}
+function loadTransp(f){
+ return new Promise(function(done){
+  var fr=new FileReader();
+  fr.onload=function(ev){
+    try{
+      var wb=XLSX.read(ev.target.result,{type:'binary',cellDates:true});
+      DATA_T=parseTranspales(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:null}));
+      rebuildData();
+      var btn=document.getElementById('btn-tp');
+      if(btn){
+        btn.style.cssText='background:#0ea5e933;color:#0ea5e9;border:1px solid #0ea5e944;padding:8px 15px;border-radius:9px;font-weight:600;font-size:12px;display:inline-flex;align-items:center;gap:7px;cursor:pointer';
+        btn.childNodes[0].nodeValue='✓ '+DATA_T.length+' transpalés';
+      }
+      initApp();
+    }catch(err){alert('Error checklist transpalés: '+err.message);}
+    done();
+  };
+  fr.readAsBinaryString(f);
+ });
+}
+document.getElementById('inp-tp').addEventListener('change',function(e){var f=e.target.files[0];if(f)loadTransp(f);});
+
+function parseTurnos(arrayBuffer, fabrica){
+  var SKIP=['JJEE','AUX','CARRETILLEROS','BAJAS','REFUERZO','PERMISO','BAJA','VACACIONES','DIAS LIBRES','#VALUE'];
+  function isSkip(v){if(!v)return true;var u=String(v).trim().toUpperCase();return SKIP.some(function(s){return u.indexOf(s)>=0;});}
+  var wb=XLSX.read(arrayBuffer,{type:'binary',cellDates:false});
+  var ws=wb.Sheets[wb.SheetNames[0]];
+  var raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:null,raw:true});
+  // Detect dates row (row with most serial-date numbers in first 15 rows)
+  var dateRowIdx=-1,bestCount=0,fechaRowIdx=-1;
+  for(var ri0=0;ri0<Math.min(15,raw.length);ri0++){
+    var row0=raw[ri0]||[];var cnt0=0;
+    for(var ci0=0;ci0<row0.length;ci0++){var vv=row0[ci0];if(typeof vv==='number'&&vv>40000&&vv<60000)cnt0++;}
+    if(cnt0>bestCount){bestCount=cnt0;dateRowIdx=ri0;}
+    // En Moras las filas "Mes", "Dia" y "Fecha" llevan LAS TRES fechas reales
+    // (empatan en conteo), y el ">" se quedaba con la primera ("Mes"). Si existe
+    // una fila etiquetada "Fecha" con fechas, esa manda.
+    var lbl0=(row0[1]!==null&&row0[1]!==undefined)?String(row0[1]).trim().toUpperCase():'';
+    if(cnt0>0&&fechaRowIdx<0&&lbl0.indexOf('FECHA')>=0)fechaRowIdx=ri0;
+  }
+  if(fechaRowIdx>=0)dateRowIdx=fechaRowIdx;
+  var dr=raw[dateRowIdx]||[];
+  var cd={};
+  dr.forEach(function(val,ci){
+    if(val===null||val===undefined)return;
+    var ds='';
+    if(typeof val==='number'&&val>40000&&val<60000){
+      var dt=new Date((val-25569)*86400000);
+      ds=dt.getUTCFullYear()+'-'+p2(dt.getUTCMonth()+1)+'-'+p2(dt.getUTCDate());
+    } else if(val instanceof Date){
+      ds=val.getUTCFullYear()+'-'+p2(val.getUTCMonth()+1)+'-'+p2(val.getUTCDate());
+    } else if(typeof val==='string'){
+      var sv=val.trim();
+      if(sv.match(/^\d{4}-\d{2}-\d{2}/)){ds=sv.slice(0,10);}
+      else if(sv.match(/^\d{1,2}\/\d{1,2}\/\d{4}/)){
+        var pt=sv.split('/');ds=pt[2]+'-'+p2(+pt[1])+'-'+p2(+pt[0]);
+      }
+    }
+    if(ds)cd[ci]=ds;
+  });
+  // Detect shift sections dynamically (works for both A Grela and Moras layouts)
+  var secKey={'MAÑANA':'Mañana','TARDE':'Tarde','NOCHE':'Noche'};
+  var secOrder=['Mañana','Tarde','Noche'];
+  var endMarkers=['BAJAS','PERMISOS','VACACIONES','DIAS LIBRES','BAJA'];
+  var secStart={};var endRow=raw.length;
+  for(var rs=0;rs<raw.length;rs++){
+    var c0=(raw[rs]&&raw[rs][0])?String(raw[rs][0]).trim().toUpperCase():'';
+    if(secKey[c0]&&secStart[secKey[c0]]===undefined)secStart[secKey[c0]]=rs;
+    else if(endMarkers.indexOf(c0)>=0&&endRow===raw.length)endRow=rs;
+  }
+  var ranges={};
+  secOrder.forEach(function(sec,i){
+    if(secStart[sec]===undefined)return;
+    var secBegin=secStart[sec];
+    var stop=endRow-1;
+    for(var j=i+1;j<secOrder.length;j++){
+      if(secStart[secOrder[j]]!==undefined){stop=secStart[secOrder[j]]-1;break;}
+    }
+    // Find the CARRETILLEROS row within this section (col 1 label). Read from there,
+    // which excludes JJEE and AUX. CARGA/DESCARGA rows. A Grela has auxiliares,
+    // Moras doesn't - this handles both. The CARRETILLEROS label row itself also
+    // holds the first carretillero in the data columns, so we start AT it.
+    var start=-1;
+    for(var rr=secBegin;rr<=stop;rr++){
+      var lbl=(raw[rr]&&raw[rr][1])?String(raw[rr][1]).trim().toUpperCase():'';
+      if(lbl.indexOf('CARRETILLERO')>=0){start=rr;break;}
+    }
+    if(start<0)start=secBegin+2; // fallback to old behaviour
+    ranges[sec]=[start,stop];
+  });
+  // A Grela tiene filas AUX. CARGA / AUX. DESCARGA; Moras no. Sirve para saber
+  // de que fabrica es realmente el archivo y avisar si se carga en el boton erroneo.
+  TURNOS_FAB_DET='Moras';
+  for(var ra=0;ra<raw.length;ra++){
+    var lb=(raw[ra]&&raw[ra][1])?String(raw[ra][1]).trim().toUpperCase():'';
+    if(lb.indexOf('AUX.')===0||lb.indexOf('AUX ')===0){TURNOS_FAB_DET='A Grela';break;}
+  }
+  var sc={};
+  Object.keys(ranges).forEach(function(t){
+    var s=ranges[t][0],en=ranges[t][1];
+    Object.keys(cd).forEach(function(ci){
+      var ds=cd[ci];var col=+ci;var ns=[];
+      for(var ri=s;ri<=en;ri++){
+        var row=raw[ri];if(!row)continue;
+        var v=row[col];
+        if(v&&typeof v==='string'&&v.trim()&&!isSkip(v))
+          ns.push(v.trim().toUpperCase());
+      }
+      if(ns.length){
+        if(!sc[ds])sc[ds]={};
+        if(!sc[ds][t])sc[ds][t]={};
+        sc[ds][t][fabrica]=ns.filter(function(v,i,a){return a.indexOf(v)===i;});
+      }
+    });
+  });
+  return {sched:sc, leave:parseLeave(raw, cd)};
+}
+// Bajas/Permisos/Vacaciones/Dias libres usan el mismo patron "hueco" que las
+// secciones de turno: la fila de cabecera (col 0) YA es la primera fila de
+// datos, y el nombre del trabajador se escribe tal cual en la celda del dia
+// en que aplica (puede haber varias filas si coinciden varias personas el
+// mismo dia). Se paran donde empieza la siguiente seccion conocida o
+// "FESTIVOS" (lista de fechas festivas para todos, no de personas: esa no
+// se lee).
+function parseLeave(raw, cd){
+  var labels=LEAVE_TYPES.map(function(t){return t.lbl;});
+  var stopLabels=labels.concat(['FESTIVOS']);
+  var start={};
+  for(var rs2=0;rs2<raw.length;rs2++){
+    var c0=(raw[rs2]&&raw[rs2][0])?String(raw[rs2][0]).trim().toUpperCase():'';
+    if(labels.indexOf(c0)>=0&&start[c0]===undefined)start[c0]=rs2;
+  }
+  var lv={};
+  LEAVE_TYPES.forEach(function(T){
+    if(start[T.lbl]===undefined)return;
+    var s=start[T.lbl],stop=raw.length-1;
+    for(var rr=s+1;rr<raw.length;rr++){
+      var c0b=(raw[rr]&&raw[rr][0])?String(raw[rr][0]).trim().toUpperCase():'';
+      if(stopLabels.indexOf(c0b)>=0){stop=rr-1;break;}
+    }
+    Object.keys(cd).forEach(function(ci){
+      var ds=cd[ci],col=+ci;
+      for(var rr2=s;rr2<=stop;rr2++){
+        var row=raw[rr2];if(!row)continue;
+        var v=row[col];
+        if(v&&typeof v==='string'&&v.trim()){
+          if(!lv[ds])lv[ds]={};
+          lv[ds][norm(v.trim())]=T.code;
+        }
+      }
+    });
+  });
+  return lv;
+}
+
+function mergeTurnos(sc, fabrica){
+  if(!SCHED)SCHED={};
+  Object.keys(sc).forEach(function(ds){
+    if(!SCHED[ds])SCHED[ds]={};
+    Object.keys(sc[ds]).forEach(function(t){
+      if(!SCHED[ds][t])SCHED[ds][t]={};
+      Object.keys(sc[ds][t]).forEach(function(fab){
+        SCHED[ds][t][fab]=sc[ds][t][fab];
+      });
+    });
+  });
+}
+// Las bajas/permisos/vacaciones/dias libres del Excel de Turnos ya vienen
+// con nombres normalizados (misma convencion que las filas de turno de ese
+// mismo archivo), asi que aqui solo se fusiona por fecha+nombre - no hace
+// falta pasar por el mapeo de equivalencias NM (ese es solo para cruzar
+// Turnos con el Checklist, un archivo distinto).
+function mergeLeave(lv){
+  Object.keys(lv).forEach(function(ds){
+    if(!LEAVE[ds])LEAVE[ds]={};
+    Object.keys(lv[ds]).forEach(function(k){LEAVE[ds][k]=lv[ds][k];});
+  });
+}
+// date en formato YYYY-MM-DD, name el nombre tal como aparece en SCHED
+// (lado Turnos). Devuelve el codigo B/P/V/DL si ese dia esta marcado, o
+// null. Fallback con nmatch por si la fila de baja abrevia el nombre de
+// forma distinta a la fila de turno del mismo trabajador.
+function leaveOn(date,name){
+  var day=LEAVE[date];if(!day)return null;
+  var k=norm(name);
+  if(day[k])return day[k];
+  var found=null;
+  Object.keys(day).forEach(function(kk){if(!found&&nmatch(kk,k))found=day[kk];});
+  return found;
+}
+
+function loadTurnosFile(file, fabrica, btnId){
+ return new Promise(function(done){
+  var fr=new FileReader();
+  fr.onload=function(ev){
+    try{
+      var pt=parseTurnos(ev.target.result, fabrica);
+      if(TURNOS_FAB_DET&&TURNOS_FAB_DET!==fabrica){
+        alert('\u26a0\ufe0f Archivo equivocado\n\nEste Excel de turnos es de '+TURNOS_FAB_DET+', pero lo has cargado en el boton de '+fabrica+'.\n\nUsa el boton "\ud83d\udcc5 Turnos '+TURNOS_FAB_DET+'".\n\nNo se ha cargado nada.');
+        return;
+      }
+      mergeTurnos(pt.sched, fabrica);
+      mergeLeave(pt.leave);
+      TURNOS_LOADED[fabrica]=true;
+      var btn=document.getElementById(btnId);
+      if(btn){
+        var col=fabrica==='Moras'?'#f97316':'#a855f7';
+        btn.style.cssText='background:'+col+'33;color:'+col+';border:1px solid '+col+'44;padding:8px 15px;border-radius:9px;font-weight:600;font-size:12px;display:inline-flex;align-items:center;gap:7px;cursor:pointer';
+        btn.childNodes[0].nodeValue='✓ '+fabrica;
+      }
+      var tp=document.getElementById('tab-pen');
+      if(tp&&!tp.classList.contains('hid')){rPen();rAct();}
+    }catch(err){alert('Error turnos '+fabrica+': '+err.message);}finally{done();}
+  };
+  fr.readAsBinaryString(file);
+ });
+}
+
+document.getElementById('inp-tn').addEventListener('change',function(e){
+  var f=e.target.files[0];if(!f)return;
+  loadTurnosFile(f,'A Grela','btn-tn');
+});
+if(document.getElementById('inp-tn2')){
+  document.getElementById('inp-tn2').addEventListener('change',function(e){
+    var f=e.target.files[0];if(!f)return;
+    loadTurnosFile(f,'Moras','btn-tn2');
+  });
+}
+
+// ── REPARACIONES (Incidencias_Carretillas.xlsm) ─────────────────────────────
+// Fichero aparte de seguimiento de averias, gestionado en SharePoint. Se lee
+// tal cual el resto de Excel: en el navegador, sin servidor. Usa la hoja
+// 'INCIDENCIAS' (cabecera en fila 2, datos desde fila 3), que es la mas
+// completa (incluye responsable JJEE/AUX). La hoja 'INCIDENCIAS1' del mismo
+// libro parece un registro antiguo/duplicado con menos columnas: si en algun
+// momento resulta ser la que se sigue usando de verdad, hay que decirmelo.
+function xdRep(v){
+  if(v===null||v===undefined||v==='')return null;
+  if(typeof v==='number'&&v>20000&&v<60000)return new Date((v-25569)*86400000);
+  var dt=new Date(v);return isNaN(dt)?null:dt;
+}
+function parseReparaciones(buf){
+  var wb=XLSX.read(buf,{type:'binary',cellDates:false});
+  var ws=wb.Sheets['INCIDENCIAS']||wb.Sheets[wb.SheetNames[0]];
+  var raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:null,raw:true});
+  // La fila 1 (indice 0) puede traer basura suelta sin relacion con las
+  // columnas reales (una lista de validacion de otra parte de la hoja), asi
+  // que la cabecera de verdad se busca por contenido en vez de asumir que
+  // esta en una fila fija.
+  var headerRow=-1;
+  for(var hi=0;hi<Math.min(5,raw.length);hi++){
+    var hrow=raw[hi]||[];
+    if(hrow.some(function(v){return v&&norm(String(v)).indexOf('FECHA AVERIA')===0;})){headerRow=hi;break;}
+  }
+  if(headerRow<0)headerRow=1; // valor historico como ultimo recurso
+  var hdr=raw[headerRow]||[];
+  // Busca la columna cuya cabecera EMPIEZA por la etiqueta dada (una vez
+  // quitados saltos de linea, tildes y mayus/minus). Insensible a que se
+  // inserten o quiten columnas en medio (ya paso una vez con "AVISADO
+  // JAVIER") y a cabeceras con texto pegado (ej. "FECHA AVISO\nJavier 71908").
+  function colIdx(label){
+    var target=norm(label);
+    for(var ci=0;ci<hdr.length;ci++){
+      var h=hdr[ci];if(!h)continue;
+      if(norm(String(h).replace(/[\r\n]+/g,' ')).indexOf(target)===0)return ci;
+    }
+    return -1;
+  }
+  var IX={
+    fecha:colIdx('FECHA AVERIA'),usuario:colIdx('USUARIO'),car:colIdx('CARRETILLA'),
+    incidencia:colIdx('INCIDENCIA'),resp:colIdx('JJEE'),prioridad:colIdx('PRIORIDAD'),
+    estado:colIdx('ESTADO REPARACION'),fechaArreglo:colIdx('FECHA ARREGLO'),obs:colIdx('OBSERVACIONES')
+  };
+  function cell(row,idx){return idx>=0?row[idx]:null;}
+  var out=[];
+  for(var i=headerRow+1;i<raw.length;i++){
+    var row=raw[i];if(!row||!cell(row,IX.car))continue;
+    out.push({
+      fecha:xdRep(cell(row,IX.fecha)),usuario:String(cell(row,IX.usuario)||'').trim(),carRaw:String(cell(row,IX.car)).trim(),
+      incidencia:String(cell(row,IX.incidencia)||'').trim(),resp:String(cell(row,IX.resp)||'').trim(),
+      prioridad:String(cell(row,IX.prioridad)||'').trim(),estado:String(cell(row,IX.estado)||'').trim(),
+      fechaArreglo:xdRep(cell(row,IX.fechaArreglo)),obs:String(cell(row,IX.obs)||'').trim()
+    });
+  }
+  return out;
+}
+// Codigo del Excel de incidencias -> nombre de la carretilla/transpale del checklist,
+// siempre dentro de la MISMA fabrica (C10 de Moras no es la Carretilla 10 de A Grela).
+// Moras escribe la carretilla como numero suelto (10, 12...): se lee como C10, C12...
+// INC_ALIAS recoge codigos que no se pueden deducir. 3264 (num. de expediente de la
+// carretilla provisional) = C15 es un SUPUESTO a confirmar con quien lleva el Excel.
+var INC_ALIAS={'A Grela':{},'Moras':{'3264':'C15'}};
+function normIncCode(raw,fab){
+  var s=String(raw==null?'':raw).trim().replace(/\s+/g,' ').toUpperCase();
+  var al=(INC_ALIAS[fab]||{})[s];if(al)return al;
+  if(/^\d{1,3}$/.test(s))return'C'+parseInt(s,10);
+  return s;
+}
+// Clave de transpale: T(10)-08150, T10, "10" -> T10; el resto, el texto sin simbolos.
+function tpKey(x){
+  var u=String(x||'').toUpperCase().trim();
+  var m=u.match(/^T\s*\(?\s*(\d{1,3})\s*\)?(?!\d)/)||u.match(/^(\d{1,3})$/);
+  return m?'T'+parseInt(m[1],10):u.replace(/[^A-Z0-9]/g,'');
+}
+function buildCarIdx(){
+  var idx={};
+  DATA.forEach(function(r){
+    var f=r._fab;if(!idx[f])idx[f]={cars:{},tps:{}};
+    if(r._tp)idx[f].tps[tpKey(r._code)]=r._car;else idx[f].cars[r._car]=1;
+  });
+  return idx;
+}
+function matchCarFromInc(raw,fab,idx){
+  idx=idx||buildCarIdx();
+  // con fabrica dada SOLO se busca en esa fabrica (si no tiene checklist cargado, no hay emparejado)
+  var fabs=fab?(idx[fab]?[fab]:[]):Object.keys(idx);
+  var s=normIncCode(raw,fab);
+  var m=s.match(/^C0*(\d{1,3})$/);
+  for(var i=0;i<fabs.length;i++){
+    var I=idx[fabs[i]],cars=Object.keys(I.cars);
+    if(m){
+      var hit=cars.find(function(c){return new RegExp('^Carretilla '+m[1]+'\\s*\\(').test(c);});
+      if(hit)return hit;
+      if(I.tps['T'+parseInt(m[1],10)])return I.tps['T'+parseInt(m[1],10)];  // C17/C19 de Moras son traspaletas
+    }
+    if(/STILL/.test(s)){var h2=cars.find(function(c){return /Still/i.test(c);});if(h2)return h2;}
+    if(/STEEL/.test(s)){var h3=cars.find(function(c){return /Steel/i.test(c);});if(h3)return h3;}
+    var k=tpKey(s);if(I.tps[k])return I.tps[k];
+  }
+  return null;
+}
+function rematchRepars(){
+  var idx=buildCarIdx();
+  REPARS.forEach(function(r){r.car=matchCarFromInc(r.carRaw,r.fab,idx);});
+  Object.keys(REPARS_BY).forEach(setRepBtn);
+}
+// Texto del boton de Reparaciones: pendientes y codigos sin emparejar (lista al pasar el raton).
+function setRepBtn(fab){
+  var rows=REPARS_BY[fab];if(!rows)return;
+  var mor=fab==='Moras',btn=document.getElementById(mor?'btn-rpm':'btn-rp'),iid=mor?'inp-rpm':'inp-rp';
+  if(!btn)return;
+  var pend=rows.filter(function(r){return r.estado.toLowerCase().trim()==='pendiente';}).length;
+  var sin=uniq(rows.filter(function(r){return!r.car;}).map(function(r){return r.carRaw;}));
+  var hay=DATA.some(function(r){return r._fab===fab;});
+  var extra,tit;
+  if(!hay){extra=' · sin checklist de '+fab+' para emparejar';tit='El checklist cargado no tiene registros de '+fab+': no se puede emparejar ningún código.';}
+  else if(sin.length){extra=' · '+sin.length+' códigos sin emparejar';tit='Sin emparejar con el checklist ('+sin.length+'): '+sin.join(', ');}
+  else{extra='';tit='Todos los códigos emparejados con el checklist';}
+  btn.title=tit;
+  btn.innerHTML='✓ Reparaciones '+(mor?'Moras':'A Grela')+' ('+pend+' pend.)'+extra+'<input type="file" id="'+iid+'" accept=".xlsx,.xlsm,.xls">';
+  document.getElementById(iid).addEventListener('change',function(e){var f=e.target.files[0];if(f)loadReparaciones(f,fab);});
+}
+function rebuildRepars(){
+  REPARS=[].concat(REPARS_BY['A Grela']||[],REPARS_BY['Moras']||[]);
+  rematchRepars();
+}
+function loadReparaciones(file,fab){
+ fab=fab||'A Grela';
+ return new Promise(function(done){
+  var fr=new FileReader();
+  fr.onload=function(ev){
+    try{
+      var rows=parseReparaciones(ev.target.result);
+      rows.forEach(function(r){r.fab=fab;});
+      REPARS_BY[fab]=rows;
+      rebuildRepars();
+      if(LIGHT&&!document.getElementById('tab-inc').classList.contains('hid'))rInc();
+      setRepBtn(fab);
+      if(document.getElementById('isub-rec')&&!document.getElementById('isub-rec').classList.contains('hid'))rRec();
+      if(document.getElementById('isub-desc')&&!document.getElementById('isub-desc').classList.contains('hid'))rDesc();
+      var selCar=document.getElementById('inc-pan')?document.getElementById('inc-pan').dataset.car:null;
+      if(selCar){var ix=incC.map(function(c){return c.car;}).indexOf(selCar);if(ix>=0)sInc(ix);}
+    }catch(err){alert('Error leyendo el Excel de reparaciones '+fab+': '+err.message);}finally{done();}
+  };
+  fr.readAsBinaryString(file);
+ });
+}
+document.getElementById('inp-rp').addEventListener('change',function(e){
+  var f=e.target.files[0];if(!f)return;
+  loadReparaciones(f,'A Grela');
+});
+document.getElementById('inp-rpm').addEventListener('change',function(e){
+  var f=e.target.files[0];if(!f)return;
+  loadReparaciones(f,'Moras');
+});
+
+// ── SELECTOR CON MEMORIA DE CARPETA / RECARGA (Chrome y Edge de escritorio) ──
+// Cada boton abre el selector en la ultima carpeta usada (Turnos Grela+Moras
+// comparten carpeta; Checklist+Reparaciones comparten la suya). El archivo
+// elegido se recuerda en IndexedDB: al abrir el dashboard se vuelve a leer solo
+// (si Chrome conserva el permiso) o con un clic en "Recargar archivos".
+// En navegadores sin showOpenFilePicker (Android, Firefox, Safari) todo sigue
+// funcionando con los botones de siempre.
+var FSA=(function(){
+  if(!window.showOpenFilePicker||!window.indexedDB)return null;
+  var H={};
+  var SLOTS=[
+    {k:'cl', btn:'btn-cl', id:'chkinc', sib:'rp', load:function(f){return loadChecklist(f);}},
+    {k:'tp', btn:'btn-tp', id:'chkinc', sib:'cl', load:function(f){return loadTransp(f);}},
+    {k:'tn', btn:'btn-tn', id:'turnos', sib:'tn2',load:function(f){return loadTurnosFile(f,'A Grela','btn-tn');}},
+    {k:'tn2',btn:'btn-tn2',id:'turnos', sib:'tn', load:function(f){return loadTurnosFile(f,'Moras','btn-tn2');}},
+    {k:'rp', btn:'btn-rp', id:'chkinc', sib:'cl', load:function(f){return loadReparaciones(f,'A Grela');}},
+    {k:'rpm',btn:'btn-rpm',id:'chkinc', sib:'rp', load:function(f){return loadReparaciones(f,'Moras');}}
+  ];
+  var bypass=false;
+  function db(){return new Promise(function(res,rej){var r=indexedDB.open('dashCarretillas',1);r.onupgradeneeded=function(){r.result.createObjectStore('h');};r.onsuccess=function(){res(r.result);};r.onerror=function(){rej(r.error);};});}
+  function put(k,v){return db().then(function(d){return new Promise(function(res,rej){var t=d.transaction('h','readwrite');t.objectStore('h').put(v,k);t.oncomplete=function(){res();};t.onerror=function(){rej(t.error);};});});}
+  function get(k){return db().then(function(d){return new Promise(function(res,rej){var q=d.transaction('h').objectStore('h').get(k);q.onsuccess=function(){res(q.result);};q.onerror=function(){rej(q.error);};});});}
+  function pad(n){return (n<10?'0':'')+n;}
+  function stamp(s,file){
+    var el=document.getElementById(s.btn);if(!el)return;
+    var d=new Date(file.lastModified);
+    el.title=file.name+' · guardado '+pad(d.getDate())+'/'+pad(d.getMonth()+1)+' '+pad(d.getHours())+':'+pad(d.getMinutes());
+  }
+  function showReload(){var b=document.getElementById('btn-reload');if(b)b.classList.remove('hid');}
+  async function ensurePerm(h,ask){
+    var o={mode:'read'};
+    if((await h.queryPermission(o))==='granted')return true;
+    if(!ask)return false;
+    return (await h.requestPermission(o))==='granted';
+  }
+  async function loadSlot(s){
+    var file=await H[s.k].getFile();
+    stamp(s,file);
+    await s.load(file);
+  }
+  async function reloadAll(ask){
+    var have=SLOTS.filter(function(s){return H[s.k];});
+    // los permisos se piden todos a la vez, dentro del mismo clic
+    var ok=await Promise.all(have.map(function(s){return ensurePerm(H[s.k],ask).catch(function(){return false;});}));
+    var fail=[],pend=0;
+    for(var i=0;i<have.length;i++){
+      if(!ok[i]){pend++;continue;}
+      try{await loadSlot(have[i]);}catch(err){fail.push(H[have[i].k].name);}
+    }
+    if(fail.length)alert('No se pudo leer: '+fail.join(', ')+'\nPuede que se haya movido o renombrado. Vuelve a elegirlo con su boton.');
+    return pend;
+  }
+  async function pick(s){
+    var opts={id:s.id,multiple:false,types:[{description:'Excel',accept:{
+      'application/vnd.ms-excel.sheet.macroEnabled.12':['.xlsm'],
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':['.xlsx'],
+      'application/vnd.ms-excel':['.xls']}}]};
+    var prev=H[s.k]||H[s.sib];
+    if(prev)opts.startIn=prev;
+    var hs=await window.showOpenFilePicker(opts);
+    H[s.k]=hs[0];
+    try{await put(s.k,hs[0]);}catch(e){}
+    showReload();
+    await loadSlot(s);
+  }
+  SLOTS.forEach(function(s){
+    var el=document.getElementById(s.btn);if(!el)return;
+    el.addEventListener('click',function(e){
+      if(bypass)return;
+      e.preventDefault();
+      pick(s).catch(function(err){
+        if(err&&err.name==='AbortError')return;          // cancelo el selector
+        var inp=el.querySelector('input[type=file]');     // pagina embebida u otro bloqueo: selector clasico
+        if(inp){bypass=true;inp.click();setTimeout(function(){bypass=false;},0);}
+      });
+    });
+  });
+  var rb=document.getElementById('btn-reload');
+  if(rb)rb.addEventListener('click',async function(){
+    rb.textContent='Cargando…';
+    var pend=await reloadAll(true);
+    rb.textContent=pend?'↻ Recargar archivos ('+pend+' sin permiso)':'↻ Recargar archivos';
+  });
+  // arranque: recupera los archivos recordados y los lee solos si hay permiso
+  (async function(){
+    try{
+      var any=false;
+      for(var i=0;i<SLOTS.length;i++){var h=await get(SLOTS[i].k);if(h){H[SLOTS[i].k]=h;any=true;}}
+      if(!any)return;
+      showReload();
+      var pend=await reloadAll(false);
+      if(pend&&rb)rb.textContent='↻ Recargar archivos ('+pend+')';
+    }catch(e){}
+  })();
+  return {reload:reloadAll};
+})();
+
+function resetEq(){
+  if(!confirm('Se descartan las equivalencias que subiste y se vuelve a las de serie. ¿Seguro?'))return;
+  try{localStorage.removeItem('dash_nm');}catch(e){}
+  NM=NM_ORIG;rCfg();
+  var msg=document.getElementById('eq-msg');msg.textContent='↩ Equivalencias de serie restauradas. Recarga la pagina (F5) para aplicarlas.';msg.classList.remove('hid');setTimeout(function(){msg.classList.add('hid');},6000);
+}
+function loadEq(inp){
+  var f=inp.files[0];if(!f)return;
+  var fr=new FileReader();
+  fr.onload=function(ev){
+    try{
+      var wb=XLSX.read(ev.target.result,{type:'binary'});
+      var rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:''});
+      var nm={};var cnt=0;
+      rows.forEach(function(row){var vs=Object.values(row);var k=norm(String(vs[0]||''));var v=norm(String(vs[1]||''));if(k&&v){nm[k]=v;cnt++;}});
+      NM=nm;
+      var saved=true;
+      try{localStorage.setItem('dash_nm',JSON.stringify(nm));}catch(e){saved=false;}
+      var msg=document.getElementById('eq-msg');msg.textContent=saved?'✅ '+cnt+' equivalencias cargadas y guardadas en este navegador. Recarga la pagina (F5) para aplicarlas a los Turnos.':'⚠️ '+cnt+' equivalencias cargadas, pero este navegador no permite guardarlas: se perderan al cerrar.';msg.classList.remove('hid');setTimeout(function(){msg.classList.add('hid');},9000);
+      rCfg();
+    }catch(err){alert('Error: '+err.message);}
+  };
+  fr.readAsBinaryString(f);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+function initApp(){
+  document.getElementById('upro').classList.add('hid');
+  document.getElementById('tabs').classList.remove('hid');
+  var btn=document.getElementById('btn-cl');
+  btn.style.cssText='background:#3b82f633;color:#3b82f6;border:1px solid #3b82f644;padding:8px 15px;border-radius:9px;font-weight:600;font-size:12px;display:inline-flex;align-items:center;gap:7px;cursor:pointer';
+  btn.childNodes[0].nodeValue='✓ '+DATA_C.length+' registros';
+  document.getElementById('hsub').textContent=DATA.length+' registros · '+uniq(DATA.map(function(r){return r._fab;})).join(', ');
+  var fabs=['Todas'].concat(uniq(DATA.map(function(r){return r._fab;}).filter(function(f){return f!=='Sin asignar';})));
+  if(DATA.some(function(r){return r._fab==='Sin asignar';}))fabs.push('Sin asignar');
+  FAB_IDS.forEach(function(id){
+    var el=document.getElementById(id);if(el){el.innerHTML=fabs.map(function(f){return'<option>'+f+'</option>';}).join('');el.dataset.fill='1';}
+  });
+  try{var _sf=localStorage.getItem('dash_fab');if(_sf&&fabs.indexOf(_sf)>=0)FAB_SEL=_sf;}catch(e){}
+  if(fabs.indexOf(FAB_SEL)<0)FAB_SEL='Todas';
+  buildFabSel(fabs);applyFab();
+  var isos=DATA.map(function(r){return r._fISO;}).sort();
+  if(isos.length){var mn=isos[0],mx=isos[isos.length-1];['r-fecha','p-fec'].forEach(function(id){var el=document.getElementById(id);if(el){el.min=mn;el.max=mx;}});}
+  if(LIGHT&&!window._lightDef){   // solo la primera vez: recargar archivos no pisa lo que el usuario haya elegido
+    window._lightDef=1;
+    var _e;
+    if(_e=document.getElementById('r-fecha'))_e.value=todayISO();
+    if(_e=document.getElementById('r-tur'))_e.value=currentShift();
+    if(_e=document.getElementById('p-fec'))_e.value=shiftDateISO();
+    if(_e=document.getElementById('p-tur'))_e.value=currentShift();
+  }
+  showTab('reg');
+}
+
+document.querySelectorAll('.tab').forEach(function(b){b.addEventListener('click',function(){showTab(b.dataset.tab);});});
+if(LIGHT){
+  document.body.classList.add('light');
+  ['hor','ana'].forEach(function(t){var b=document.querySelector('.tab[data-tab="'+t+'"]');if(b)b.remove();});
+  var _k=document.getElementById('kpi-reg');_k.className='kmini';document.getElementById('tabs').appendChild(_k);
+  var _sb=document.getElementById('stab-inc-todas');if(_sb)_sb.parentElement.classList.add('hid');
+  var _tp=document.getElementById('i-tipo');if(_tp)(_tp.closest('.fg')||_tp).classList.add('hid');
+  var _so=document.getElementById('i-solo');if(_so){var _lb=_so.closest('label');if(_lb)_lb.classList.add('hid');}
+}
+function showSub(sub){
+  document.getElementById('stab-reg').classList.toggle('active',sub==='reg');
+  document.getElementById('stab-seg').classList.toggle('active',sub==='seg');
+  document.getElementById('sub-reg').classList.toggle('hid',sub!=='reg');
+  document.getElementById('sub-seg').classList.toggle('hid',sub!=='seg');
+  if(sub==='seg'&&SCHED)rAct();
+  if(sub==='reg')rPen();
+}
+function stkFix(){
+  var h1=document.getElementById('stk-hdr');if(!h1)return;
+  var H1=h1.offsetHeight;
+  var sk=document.getElementById('reg-stky');
+  if(sk){
+    sk.style.top=H1+'px';
+    var H2=sk.offsetHeight;
+    var th=document.getElementById('reg-thead');if(th)th.style.top=(H1+H2)+'px';
+    var pan=document.getElementById('reg-pan');if(pan)pan.style.top=(H1+H2+12)+'px';
+  }
+  var ip=document.getElementById('inc-pan');if(ip)ip.style.top=(H1+12)+'px';
+}
+window.addEventListener('resize',function(){clearTimeout(window._stkT);window._stkT=setTimeout(stkFix,120);});
+// ── SELECTOR GENERAL DE FABRICA ──────────────────────────────────────────────
+// Un solo selector en la cabecera manda sobre todas las pestanas. Los selects de
+// fabrica de cada pestana siguen existiendo (ocultos) y se mantienen sincronizados,
+// asi cada vista reutiliza su filtro de siempre.
+var FAB_SEL='Todas';
+var FAB_IDS=['r-fab','p-fab','act-fab','i-fab','ir-fab','id-fab','h-fab','a-fab'];
+function applyFab(){
+  FAB_IDS.forEach(function(id){
+    var el=document.getElementById(id);if(!el)return;
+    var ok=Array.prototype.some.call(el.options,function(o){return o.value===FAB_SEL;});
+    el.value=ok?FAB_SEL:'Todas';
+    var g=el.closest('.fg')||el;g.classList.add('hid');
+  });
+}
+function buildFabSel(fabs){
+  var box=document.getElementById('fab-sel');if(!box)return;
+  box.innerHTML=fabs.map(function(f){
+    return'<button data-f="'+f+'" data-c="'+(f==='A Grela'?'g':f==='Moras'?'m':'')+'" class="'+(f===FAB_SEL?'on':'')+'" onclick="setFab(this.dataset.f)">'+f+'</button>';
+  }).join('');
+  box.classList.remove('hid');
+}
+// Botones de archivo segun fabrica: checklists comunes (un solo Forms con columna Fabrica),
+// Turnos e Incidencias propios de cada fabrica.
+function updateFileButtons(){
+  var g=FAB_SEL==='Todas'||FAB_SEL==='A Grela',m=FAB_SEL==='Todas'||FAB_SEL==='Moras';
+  [['btn-tn',g],['btn-rp',g],['btn-tn2',m],['btn-rpm',m]].forEach(function(x){
+    var e=document.getElementById(x[0]);if(e)e.classList.toggle('hid',!x[1]);
+  });
+}
+function showFabStart(){
+  var last=null;try{last=localStorage.getItem('dash_fab');}catch(e){}
+  document.querySelectorAll('#fab-start button').forEach(function(b){b.classList.toggle('last',b.dataset.f===last);});
+  document.getElementById('fab-start').classList.remove('hid');
+}
+function pickFab(f){
+  document.getElementById('fab-start').classList.add('hid');
+  FAB_SEL=f;try{localStorage.setItem('dash_fab',f);}catch(e){}
+  updateFileButtons();
+  if(DATA.length)setFab(f);
+}
+function setFab(f){
+  FAB_SEL=f;updateFileButtons();try{localStorage.setItem('dash_fab',f);}catch(e){}
+  document.querySelectorAll('#fab-sel button').forEach(function(b){b.classList.toggle('on',b.dataset.f===f);});
+  applyFab();
+  var t=document.querySelector('.tab.active');t=t?t.dataset.tab:'reg';
+  var vis=function(id){var e=document.getElementById(id);return e&&!e.classList.contains('hid');};
+  if(t==='reg'){regPage=0;rReg();}
+  else if(t==='pen'){if(vis('sub-reg'))rPen();else rAct();}
+  else if(t==='inc'){if(vis('isub-rec'))rRec();else if(vis('isub-desc'))rDesc();else rInc();}
+  else if(t==='hor'){selC=[];rHor();}
+  else if(t==='ana'){rAna();rOp();}
+  setTimeout(stkFix,0);
+}
+showFabStart();
+updateFileButtons();
+function showTab(tab){
+  document.querySelectorAll('.tab').forEach(function(b){b.classList.toggle('active',b.dataset.tab===tab);});
+  TABS.forEach(function(t){document.getElementById('tab-'+t).classList.toggle('hid',t!==tab);});
+  if(LIGHT){var _km=document.getElementById('kpi-reg');if(_km)_km.classList.toggle('hid',tab!=='reg');}
+  if(tab==='reg')rReg();
+  else if(tab==='pen'){showSub('reg');rPen();if(SCHED)rAct();}
+  else if(tab==='inc'){rInc();if(!document.getElementById('isub-rec').classList.contains('hid'))rRec();}
+  else if(tab==='hor')rHor();
+  else if(tab==='ana'){rAna();rOp();}
+  else if(tab==='cfg')rCfg();
+  setTimeout(stkFix,0);
+}
+
+function fD(o){return DATA.filter(function(r){
+  if(o.fab&&o.fab!=='Todas'&&r._fab!==o.fab)return false;
+  if(o.fiso&&r._fISO!==o.fiso)return false;
+  if(o.tur&&r._tur!==o.tur)return false;
+  if(o.car&&r._car!==o.car)return false;
+  if(o.usr&&r._nom!==o.usr)return false;
+  if(o.pen==='si'&&!r._ip)return false;
+  if(o.pen==='no'&&r._ip)return false;
+  if(o.res&&!r._res.includes(o.res))return false;
+  return true;
+}).sort(function(a,b){return b._ini-a._ini;});}
+
+// ── REGISTROS ─────────────────────────────────────────────────────────────────
+function rReg(){
+  var cars=srtC(uniq(DATA.map(function(r){return r._car;})));
+  var cs=document.getElementById('r-car');var pc=cs.value;
+  cs.innerHTML='<option value="">Todas</option>'+cars.map(function(c){return'<option value="'+c+'"'+(c===pc?' selected':'')+'>'+c+'</option>';}).join('');
+  var us=document.getElementById('r-usr');var pu=us.value;
+  var usrs=uniq(DATA.map(function(r){return r._nom;})).sort(function(a,b){return a.localeCompare(b);});
+  us.innerHTML='<option value="">Todos</option>'+usrs.map(function(n){return'<option value="'+n+'"'+(n===pu?' selected':'')+'>'+n+'</option>';}).join('');
+  var fd=fD({fab:gv('r-fab'),fiso:gv('r-fecha'),tur:gv('r-tur'),car:gv('r-car'),usr:gv('r-usr'),pen:gv('r-pen'),res:gv('r-res')});
+  var ok=fd.filter(function(r){return r._res.includes('TODO OK');}).length;
+  var pe=fd.filter(function(r){return r._res.includes('PENDIENTE');}).length;
+  var lv=fd.filter(function(r){return r._res.includes('LEVE');}).length;
+  var gr=fd.filter(function(r){return r._res.includes('GRAVE');}).length;
+  document.getElementById('kpi-reg').innerHTML=[{l:'Total',v:fd.length,c:'#3b82f6'},{l:'✅ OK',v:ok,c:'#22c55e'},{l:'🔧 Pendiente',v:pe,c:'#f59e0b'},{l:'⚠️ Leves',v:lv,c:'#f97316'},{l:'🔴 Graves',v:gr,c:'#ef4444'}].map(function(k){if(LIGHT)return'<div class="kchip" style="border-left-color:'+k.c+'"><b style="color:'+k.c+'">'+k.v+'</b>'+k.l+'</div>';return'<div class="kpi" style="border-left:3px solid '+k.c+'"><div class="kv" style="color:'+k.c+'">'+k.v+'</div><div class="kl">'+k.l+'</div></div>';}).join('');
+  var RPP=200,tp=Math.max(1,Math.ceil(fd.length/RPP));
+  if(regPage>=tp)regPage=tp-1; if(regPage<0)regPage=0;
+  var ini=regPage*RPP,fin=Math.min(ini+RPP,fd.length);
+  regR=fd;
+  document.getElementById('tb-reg').innerHTML=fd.slice(ini,fin).map(function(r,k){return'<tr id="rg'+(ini+k)+'" onclick="sReg('+(ini+k)+')"><td>'+r._fStr+'</td><td>'+fb(r._fab)+'</td><td>'+tb(r._tur)+'</td><td style="font-weight:600;color:#93c5fd">'+r._car+'</td><td>'+r._nom+'</td><td>'+(r._ip?'<span style="color:#f59e0b;font-weight:600">⚠️ Sí</span>':'<span style="color:#22c55e">No</span>')+'</td><td><span style="background:'+rc(r._res)+'22;color:'+rc(r._res)+';padding:3px 8px;border-radius:4px;font-size:11px;font-weight:600">'+rl(r._res)+'</span></td></tr>';}).join('');
+  setTimeout(stkFix,0);
+  var me=document.getElementById('reg-more');
+  if(fd.length>RPP){
+    me.classList.remove('hid');me.style.display='flex';
+    document.getElementById('reg-lbl').textContent='Mostrando '+(ini+1)+'–'+fin+' de '+fd.length+'  ·  Página '+(regPage+1)+' de '+tp;
+    var pv=document.getElementById('reg-prev'),nx=document.getElementById('reg-next');
+    pv.disabled=regPage===0;pv.style.opacity=regPage===0?0.35:1;
+    nx.disabled=regPage>=tp-1;nx.style.opacity=regPage>=tp-1?0.35:1;
+  } else {me.classList.add('hid');me.style.display='none';}
+}
+function sReg(i){
+  document.querySelectorAll('#tb-reg tr').forEach(function(e){e.classList.remove('sel');});
+  var el=document.getElementById('rg'+i);if(el)el.classList.add('sel');
+  var r=regR[i];if(!r)return;
+  var p=document.getElementById('reg-pan');
+  p.style.display='block';p.style.alignItems='flex-start';p.style.justifyContent='flex-start';
+  p.innerHTML=detHTML(r);
+}
+function regPg(d){
+  regPage+=d;rReg();
+  var t=document.getElementById('tab-reg');if(t)t.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function clReg(){regPage=0;['r-tur','r-car','r-usr','r-pen','r-res'].forEach(function(id){var e=document.getElementById(id);if(e){e.value='';e.selectedIndex=0;}});document.getElementById('r-fecha').value=LIGHT?todayISO():'';if(LIGHT)document.getElementById('r-tur').value=currentShift();rReg();}
+
+// ── PENDIENTES ─────────────────────────────────────────────────────────────────
+function bRS(fiso,tur){var s=new Set();DATA.filter(function(r){return r._fISOt===fiso&&r._tur===tur;}).forEach(function(r){s.add(r._nomN);});return s;}
+
+function rPen(){
+  if(!SCHED){document.getElementById('pen-nos').classList.remove('hid');document.getElementById('pen-bdy').classList.add('hid');return;}
+  document.getElementById('pen-nos').classList.add('hid');
+  var pb=document.getElementById('pen-bdy');pb.classList.remove('hid');pb.style.display='block';
+  var selD=gv('p-fec'),selT=gv('p-tur'),selF=gv('p-fab');
+  if(!selD){
+    document.getElementById('pen-sin').innerHTML='<div style="color:#ffffff;font-size:12px">← Selecciona una fecha</div>';
+    document.getElementById('pen-con').innerHTML='';return;
+  }
+  // SCHED[date][turno][fabrica] = names. Gather workers for the selected fabrica(s).
+  var turObj=(SCHED[selD]||{})[selT]||{};
+  var workersByFab={};
+  Object.keys(turObj).forEach(function(fab){
+    if(selF==='Todas'||selF===fab){
+      turObj[fab].forEach(function(sn){workersByFab[sn]=fab;});
+    }
+  });
+  var workers=Object.keys(workersByFab);
+  var regsD=DATA.filter(function(r){return r._fISOt===selD&&r._tur===selT&&(selF==='Todas'||r._fab===selF);});
+  var regSet=bRS(selD,selT);
+  var sinReg=workers.filter(function(sn){return!wReg(sn,regSet);});
+  var sinH=sinReg.map(function(sn){
+    var k=norm(sn),mp=NM[k],otro=null;
+    var wFab=workersByFab[sn];
+    if(mp){var ot=DATA.filter(function(r){return r._fISOt===selD&&r._nomN===mp&&r._tur!==selT;});if(ot.length)otro=ot[0]._tur;}
+    return'<div class="pr"><div style="width:32px;height:32px;border-radius:50%;background:#ef444422;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">👤</div><div style="flex:1;min-width:0"><div style="font-size:12px;color:#fca5a5;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+sn+'</div>'+(mp?'<div style="font-size:10px;color:#ffffff;margin-top:1px">'+mp+'</div>':'')+'</div>'+(otro?'<span style="background:#f59e0b22;color:#f59e0b;padding:2px 6px;border-radius:4px;font-size:9px;font-weight:600;flex-shrink:0">↔'+otro+'</span>':'<span style="background:#ef444422;color:#ef4444;padding:2px 6px;border-radius:4px;font-size:9px;font-weight:600;flex-shrink:0">Sin reg.</span>')+'</div>';
+  }).join('');
+  document.getElementById('pen-sin').innerHTML='<div style="font-size:11px;font-weight:700;color:#ef4444;margin-bottom:8px"><span style="background:#ef444422;padding:3px 9px;border-radius:6px">❌ Sin registro ('+sinReg.length+')</span></div>'+(sinReg.length===0?'<div style="background:#22c55e11;border:1px solid #22c55e33;border-radius:8px;padding:12px;color:#86efac;font-size:11px">✅ Todos registraron</div>':sinH);
+  var conH=regsD.map(function(r){return'<div class="pro"><div style="width:32px;height:32px;border-radius:50%;background:#22c55e22;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">✅</div><div style="flex:1;min-width:0"><div style="font-size:12px;color:#86efac;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+r._nom+'</div><div style="font-size:10px;color:#ffffff;margin-top:1px">'+r._car+' '+fb(r._fab)+'</div></div><span style="background:'+rc(r._res)+'22;color:'+rc(r._res)+';padding:2px 6px;border-radius:4px;font-size:9px;font-weight:600;flex-shrink:0">'+rl(r._res)+'</span></div>';}).join('');
+  document.getElementById('pen-con').innerHTML='<div style="font-size:11px;font-weight:700;color:#22c55e;margin-bottom:8px"><span style="background:#22c55e22;padding:3px 9px;border-radius:6px">✅ Con registro ('+regsD.length+')</span></div>'+conH;
+}
+
+// ── ACTIVIDAD ─────────────────────────────────────────────────────────────────
+function prng(per,off){
+  var now=new Date();
+  if(per==='semana'){var mon=monOf(now);mon.setUTCDate(mon.getUTCDate()+off*7);var sat=addD(mon,5);return{desde:toISO(mon),hasta:toISO(sat),label:'Sem. '+p2(mon.getUTCDate())+'/'+p2(mon.getUTCMonth()+1)+' → '+p2(sat.getUTCDate())+'/'+p2(sat.getUTCMonth()+1)};}
+  if(per==='año'){var y=now.getFullYear()+off;var d0=new Date(Date.UTC(y,0,1));var f0=new Date(Date.UTC(y,11,31));return{desde:toISO(d0),hasta:toISO(f0),label:'Año '+y};}
+  var d=new Date(now.getFullYear(),now.getMonth()+off,1);var fin=new Date(d.getFullYear(),d.getMonth()+1,0);
+  return{desde:toISO(d),hasta:toISO(fin),label:MES[d.getMonth()]+' '+d.getFullYear()};
+}
+function getW(des,has,tf,ff){
+  if(!SCHED)return{};var res={};
+  var todayISO=toISO(new Date());
+  // Construye SIEMPRE la semana completa de cada persona (todos sus turnos,
+  // sin descartar los que no coincidan con tf) - el filtro de turno ya no
+  // oculta dias sueltos, solo decide mas abajo QUIEN entra en la lista (ver
+  // "hasTf"). Asi, si alguien cambio un dia de Tarde a Mañana, al filtrar
+  // por cualquiera de los dos turnos se ve su semana entera igual.
+  var allTurCount={};
+  Object.keys(SCHED).forEach(function(date){
+    if(date<des||date>has)return;
+    var wk=weekKeyOf(date);
+    var isPast=date<=todayISO;
+    Object.keys(SCHED[date]).forEach(function(tur){
+      var turObj=SCHED[date][tur];
+      Object.keys(turObj).forEach(function(fab){
+        if(ff&&ff!=='Todas'&&ff!==fab)return;
+        var ws=turObj[fab];var rSet=new Set();
+        DATA.filter(function(r){return r._fISOt===date&&r._tur===tur&&r._fab===fab;}).forEach(function(r){rSet.add(r._nomN);});
+        ws.forEach(function(sn){
+          var k=norm(sn),mp=NM[k]||sn;
+          if(!res[mp])res[mp]={name:sn,reg:0,mis:0,sched:{},reged:{},leave:{},fab:fab,hasTf:false,tfFilter:tf||null};
+          res[mp].sched[date]=tur;
+          if(tf&&tur===tf)res[mp].hasTf=true;
+          if(!allTurCount[mp])allTurCount[mp]={};
+          if(!allTurCount[mp][wk])allTurCount[mp][wk]={};
+          allTurCount[mp][wk][tur]=(allTurCount[mp][wk][tur]||0)+1;
+          var lvCode=leaveOn(date,sn);
+          if(lvCode)res[mp].leave[date]=lvCode;
+          var did=wReg(sn,rSet);
+          if(did)res[mp].reged[date]=true;
+          // El % y el contador de la tarjeta siguen contando SOLO los dias
+          // del turno filtrado (como ya funcionaba) - el filtro decide que
+          // cuenta para el %, aunque ahora tambien se vea el resto de la
+          // semana al lado.
+          if(isPast&&!lvCode&&(!tf||tur===tf)){
+            if(did){res[mp].reg++;}else{res[mp].mis++;}
+          }
+        });
+      });
+    });
+  });
+  // El filtro de turno decide QUIEN aparece (solo quien trabajo ese turno
+  // alguna vez en el periodo) pero no recorta sus dias - eso ya quedo hecho
+  // arriba con la semana completa.
+  if(tf){
+    Object.keys(res).forEach(function(mp){if(!res[mp].hasTf)delete res[mp];});
+  }
+  // Segunda pasada para bajas/permisos/vacaciones/dias libres: el caso
+  // habitual es que quien organiza el cuadrante YA quita a la persona de su
+  // turno esos dias (no aparece en SCHED), asi que el cruce de arriba (que
+  // solo mira leave en los dias que SI esta en el cuadrante) se lo pierde.
+  // Aqui se busca directamente en LEAVE para cada trabajador que ya tenga
+  // tarjeta (por tener turno asignado en algun otro dia del rango) y se le
+  // rellenan tambien sus dias sueltos de baja/vacaciones aunque ese dia en
+  // concreto no tuviera hueco en el cuadrante.
+  var resKeys=Object.keys(res);
+  Object.keys(LEAVE).forEach(function(date){
+    if(date<des||date>has)return;
+    var day=LEAVE[date];
+    resKeys.forEach(function(mp){
+      if(res[mp].leave[date])return;
+      var k=norm(res[mp].name);
+      var code=day[k];
+      if(!code)Object.keys(day).forEach(function(kk){if(!code&&nmatch(kk,k))code=day[kk];});
+      if(code)res[mp].leave[date]=code;
+    });
+  });
+  // Turno habitual "de verdad" POR SEMANA (para cuando no hay filtro de
+  // turno seleccionado - "Todos"). Solo se marca una semana si tiene mas de
+  // un turno distinto - si toda la semana es el mismo, no hay "cambio" que
+  // resaltar.
+  resKeys.forEach(function(mp){
+    if(!res[mp])return;
+    var byWeek=allTurCount[mp]||{};
+    var out={};
+    Object.keys(byWeek).forEach(function(wk){
+      var tc=byWeek[wk],keys=Object.keys(tc);
+      if(keys.length<2)return;
+      var usualTur=null,usualN=0;
+      keys.forEach(function(t){if(tc[t]>usualN){usualN=tc[t];usualTur=t;}});
+      out[wk]=usualTur;
+    });
+    res[mp].usualTurByWeek=out;
+  });
+  return res;
+}
+function yearGrid(w){
+  // Monthly summary for the year: 12 cells, each showing month % (past months only)
+  var mAbbr=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  var todayISO=toISO(new Date());
+  var months={};
+  // Aggregate sched/reged by month
+  Object.keys(w.sched||{}).forEach(function(iso){
+    var m=parseInt(iso.slice(5,7))-1;
+    if(!months[m])months[m]={sched:0,reg:0,past:0};
+    months[m].sched++;
+    if(iso<=todayISO){months[m].past++;if(w.reged&&w.reged[iso])months[m].reg++;}
+  });
+  var html='<div style="display:flex;gap:3px;margin-top:0px;flex-wrap:wrap">';
+  for(var m=0;m<12;m++){
+    var mm=months[m];
+    if(mm&&mm.sched>0){
+      var pct=mm.past>0?Math.round(mm.reg/mm.past*100):-1;
+      var col=pct<0?'#475569':pct>=90?'#22c55e':pct>=60?'#f59e0b':'#ef4444';
+      var bg=pct<0?'#1e293b22':col;
+      html+='<div style="display:flex;flex-direction:column;align-items:center;background:#0f172a;border:1px solid '+col+'77;border-radius:5px;padding:4px 5px;min-width:38px">'
+        +'<div style="font-size:9px;color:#ffffff;font-weight:600">'+mAbbr[m]+'</div>'
+        +'<div style="font-size:12px;font-weight:700;color:'+col+'">'+(pct<0?'·':pct+'%')+'</div>'
+        +'<div style="font-size:8px;color:#ffffff">'+mm.reg+'/'+mm.past+'</div>'
+        +'</div>';
+    }
+  }
+  html+='</div>';
+  return html;
+}
+
+function weekGrid(w,des,has){
+  var days=['Lun','Mar','Mié','Jue','Vie','Sáb'];
+  var todayISO=toISO(new Date());
+  var html='<div style="display:flex;gap:4px;margin-top:0px;flex-wrap:wrap">';
+  var d=new Date(des+'T00:00:00Z');
+  var end=new Date(has+'T00:00:00Z');
+  while(d<=end){
+    var iso=d.getUTCFullYear()+'-'+p2(d.getUTCMonth()+1)+'-'+p2(d.getUTCDate());
+    var dow=d.getUTCDay();
+    if(dow>=1&&dow<=6){
+      var dayName=days[dow-1];
+      var dd=p2(d.getUTCDate())+'/'+p2(d.getUTCMonth()+1);
+      var scheduled=w.sched&&w.sched[iso];
+      var registered=w.reged&&w.reged[iso];
+      var turLetter=scheduled?scheduled.slice(0,1):'';
+      var isPast=iso<=todayISO;
+      var leaveCode=w.leave&&w.leave[iso];
+      // Si hay un turno concreto seleccionado en el filtro (tf), "cambio"
+      // significa "este dia no es el turno que estoy filtrando" (para que
+      // se vea toda la semana de la persona, con los dias que no coinciden
+      // resaltados). Sin filtro ("Todos"), sigue comparando contra el turno
+      // habitual de esa semana en concreto.
+      var usualTur=w.tfFilter?w.tfFilter:(w.usualTurByWeek?w.usualTurByWeek[weekKeyOf(iso)]:null);
+      var isShiftChange=scheduled&&usualTur&&scheduled!==usualTur;
+      if(leaveCode){
+        var LT=LEAVE_TYPES.filter(function(t){return t.code===leaveCode;})[0]||{color:'#94a3b8'};
+        html+='<div style="display:flex;flex-direction:column;align-items:center;background:'+LT.color+'22;border:1px solid '+LT.color+';border-radius:6px;padding:4px 6px;min-width:42px" title="'+(LT.name||leaveCode)+'">'
+          +'<div style="font-size:9px;color:#ffffff;font-weight:600">'+dayName+'</div>'
+          +'<div style="font-size:10px;color:#ffffff">'+dd+'</div>'
+          +'<div style="font-size:14px;font-weight:800;color:'+LT.color+'">'+leaveCode+'</div>'
+          +'<div style="font-size:8px;color:'+LT.color+';font-weight:600">'+leaveCode+'</div>'
+          +'</div>';
+      } else if(scheduled&&isPast){
+        var bg=registered?'#166534':'#7f1d1d';
+        var border=isShiftChange?'#a3e635':(registered?'#22c55e':'#ef4444');
+        var bw=isShiftChange?'2px':'1px';
+        var icon=registered?'✓':'✗';
+        var iconColor=registered?'#4ade80':'#f87171';
+        var glow=isShiftChange?';box-shadow:0 0 0 2px #a3e63555':'';
+        html+='<div style="display:flex;flex-direction:column;align-items:center;background:'+bg+';border:'+bw+' solid '+border+';border-radius:6px;padding:4px 6px;min-width:42px'+glow+'"'+(isShiftChange?' title="Cambio de turno ('+scheduled+' en vez de '+usualTur+')"':'')+'>'
+          +'<div style="font-size:9px;color:#ffffff;font-weight:600">'+dayName+'</div>'
+          +'<div style="font-size:10px;color:#ffffff">'+dd+'</div>'
+          +'<div style="font-size:14px;font-weight:700;color:'+iconColor+'">'+icon+'</div>'
+          +'<div style="font-size:8px;color:'+(isShiftChange?'#a3e635':'#ffffff')+';font-weight:700">'+turLetter+'</div>'
+          +'</div>';
+      } else if(scheduled&&!isPast){
+        var fbord=isShiftChange?'#a3e635':'#475569';
+        var fbw=isShiftChange?'2px solid':'1px dashed';
+        html+='<div style="display:flex;flex-direction:column;align-items:center;background:#0f172a;border:'+fbw+' '+fbord+';border-radius:6px;padding:4px 6px;min-width:42px"'+(isShiftChange?' title="Cambio de turno ('+scheduled+' en vez de '+usualTur+')"':'')+'>'
+          +'<div style="font-size:9px;color:#ffffff;font-weight:600">'+dayName+'</div>'
+          +'<div style="font-size:10px;color:#ffffff">'+dd+'</div>'
+          +'<div style="font-size:14px;color:#ffffff">·</div>'
+          +'<div style="font-size:8px;color:'+(isShiftChange?'#a3e635':'#ffffff')+';font-weight:700">'+turLetter+'</div>'
+          +'</div>';
+      } else {
+        html+='<div style="display:flex;flex-direction:column;align-items:center;background:#0f172a;border:1px solid #334155;border-radius:6px;padding:4px 6px;min-width:42px;opacity:0.45">'
+          +'<div style="font-size:9px;color:#ffffff;font-weight:600">'+dayName+'</div>'
+          +'<div style="font-size:10px;color:#ffffff">'+dd+'</div>'
+          +'<div style="font-size:14px;color:#ffffff">—</div>'
+          +'<div style="font-size:8px;color:#ffffff"> </div>'
+          +'</div>';
+      }
+    }
+    d.setUTCDate(d.getUTCDate()+1);
+  }
+  html+='</div>';
+  return html;
+}
+function wCard(w,cmp,des,has,per){
+  var tot=w.reg+w.mis,pct=tot>0?Math.round(w.reg/tot*100):0;
+  var bc=pct>=90?'#22c55e':pct>=60?'#f59e0b':'#ef4444';
+  var ic=pct===100?'✅':pct>=60?'⚠️':'🔴';
+  if(cmp)return'<div style="background:#0f172a;border-radius:8px;padding:9px 12px;display:flex;align-items:center;gap:10px"><span style="font-size:14px">'+ic+'</span><div style="flex:1;min-width:0"><div style="font-size:11px;font-weight:700;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+w.name+'</div><div style="display:flex;align-items:center;gap:5px;margin-top:3px"><div class="bw"><div class="bi" style="width:'+pct+'%;background:'+bc+'"></div></div><span style="font-size:9px;color:'+bc+';font-weight:700">'+pct+'%</span></div></div><div style="font-size:10px;text-align:right;flex-shrink:0"><div style="color:#22c55e">'+w.reg+'✓</div><div style="color:#ef4444">'+w.mis+'✗</div></div></div>';
+  // Full card with week grid - lighter bg + border to stand out from background
+  return'<div style="background:#22314f;border:1px solid #3b4d6b;border-left:3px solid '+bc+';border-radius:10px;padding:11px 13px;margin-bottom:8px;box-shadow:0 2px 6px rgba(0,0,0,0.25)">'
+    +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'
+    +'<div style="width:9px;height:9px;border-radius:50%;background:'+bc+';flex-shrink:0"></div>'
+    +'<div style="font-size:13px;font-weight:700;color:#f1f5f9;flex:1">'+w.name+'</div>'
+    +'<div style="display:flex;gap:8px;align-items:center;flex-shrink:0">'
+    +'<div style="font-size:14px;font-weight:800;color:'+bc+'">'+pct+'%</div>'
+    +'<div style="font-size:11px;color:#22c55e;font-weight:700">'+w.reg+'✓</div>'
+    +'<div style="font-size:11px;color:#ef4444;font-weight:700">'+w.mis+'✗</div>'
+    +'</div></div>'
+    +(per==='año'?yearGrid(w):(des&&has?weekGrid(w,des,has):''))
+    +'</div>';
+}
+function setAct(p){actP=p;actOff=0;document.getElementById('act-s').classList.toggle('active',p==='semana');document.getElementById('act-m').classList.toggle('active',p==='mes');var ay=document.getElementById('act-y');if(ay)ay.classList.toggle('active',p==='año');rAct();}
+function rAct(){
+  if(!SCHED){document.getElementById('act-pan').innerHTML='<div style="color:#ffffff;font-size:12px;padding:12px">Carga el Excel de Turnos</div>';return;}
+  var rng=prng(actP,actOff);document.getElementById('act-lbl').textContent=rng.label;
+  var ws=Object.values(getW(rng.desde,rng.hasta,gv('act-tur'),gv('act-fab')));
+  var sortMode=gv('act-sort')||'pct-asc';
+  function pctOf(w){var t=w.reg+w.mis;return t>0?w.reg/t*100:-1;}
+  ws.sort(function(a,b){
+    if(sortMode==='pct-desc')return pctOf(b)-pctOf(a)||b.reg-a.reg;
+    if(sortMode==='mis-desc')return b.mis-a.mis||pctOf(a)-pctOf(b);
+    if(sortMode==='name')return a.name.localeCompare(b.name);
+    return pctOf(a)-pctOf(b)||b.mis-a.mis; // pct-asc default
+  });
+  if(!ws.length){document.getElementById('act-pan').innerHTML='<div style="color:#ffffff;font-size:12px;padding:12px">Sin datos para este período</div>';return;}
+  var cards=ws.map(function(w){return wCard(w,false,rng.desde,rng.hasta,actP);}).join('');
+  // Multi-column for semana (grid ~2-3 cols) and año (~2 cols); single column for mes
+  if(actP==='mes'){
+    document.getElementById('act-pan').innerHTML=cards;
+  } else if(actP==='semana'){
+    document.getElementById('act-pan').innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:8px;align-items:start">'+cards+'</div>';
+  } else { // año
+    document.getElementById('act-pan').innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(520px,1fr));gap:8px;align-items:start">'+cards+'</div>';
+  }
+}
+function setOp(p){opP=p;opOff=0;document.getElementById('op-s').classList.toggle('active',p==='semana');document.getElementById('op-m').classList.toggle('active',p==='mes');rOp();}
+function rOp(){
+  if(!SCHED){document.getElementById('op-pan').innerHTML='<div style="color:#ffffff;font-size:12px">Carga el Excel de Turnos</div>';return;}
+  var rng=prng(opP,opOff);document.getElementById('op-lbl').textContent=rng.label;
+  var ws=Object.values(getW(rng.desde,rng.hasta,gv('op-tur'),'Todas')).sort(function(a,b){return b.mis-a.mis||a.reg-b.reg;});
+  var h='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:5px">'+ws.map(function(w){return wCard(w,true,rng.desde,rng.hasta,opP);}).join('')+'</div>';
+  document.getElementById('op-pan').innerHTML=ws.length?h:'<div style="color:#ffffff;font-size:12px">Sin datos</div>';
+}
+
+// ── INCIDENCIAS ───────────────────────────────────────────────────────────────
+function showIncSub(sub){
+  document.getElementById('stab-inc-todas').classList.toggle('active',sub==='todas');
+  document.getElementById('stab-inc-rec').classList.toggle('active',sub==='rec');
+  document.getElementById('stab-inc-desc').classList.toggle('active',sub==='desc');
+  document.getElementById('isub-todas').classList.toggle('hid',sub!=='todas');
+  document.getElementById('isub-rec').classList.toggle('hid',sub!=='rec');
+  document.getElementById('isub-desc').classList.toggle('hid',sub!=='desc');
+  if(sub==='rec')rRec();
+  if(sub==='desc')rDesc();
+}
+// Solo los codigos que matchCarFromInc sabe emparejar de verdad (Cx numerico,
+// Still, Steel) entran en el cruce de descoordinacion. Si se incluyeran
+// transpales/apiladores/bateria, como su REPARS.car siempre queda null,
+// saldrian TODOS como "descoordinados" aunque si esten apuntados en el
+// Excel con un codigo que hoy no sabemos traducir - falso positivo seguro,
+// peor que no mostrarlos.
+function matchableCar(car){
+  return /^Carretilla\s+\d+\s*\(/.test(car)||/Still/i.test(car)||/Steel/i.test(car);
+}
+// Incidencias marcadas por el checklist (Pendiente/Leve/Grave) que no tienen
+// ningun apunte cercano en el Excel de Incidencias para esa misma carretilla.
+// Cruce por carretilla+fecha (nunca texto: el checklist y el JJEE redactan
+// distinto). Margen de DESC_WIN dias porque el aviso puede llegar y anotarse
+// al dia siguiente, no siempre el mismo dia.
+var DESC_WIN=2;
+function descoordinaciones(){
+  var byKey={};
+  DATA.forEach(function(r){
+    if(!matchableCar(r._car))return;
+    if(!REPARS_BY[r._fab])return;   // sin el Excel de esa fabrica todo saldria como falso 'descoordinado'
+    var sev=r._res.includes('GRAVE')?3:r._res.includes('LEVE')?2:r._res.includes('PENDIENTE')?1:0;
+    if(!sev)return;
+    var key=r._car+'|'+r._fISOt;
+    if(!byKey[key]||sev>byKey[key].sev){
+      byKey[key]={car:r._car,fab:r._fab,fecha:r._fISOt,sev:sev,user:r._nom,tur:r._tur,desc:incDesc(r)};
+    }
+  });
+  var reps=REPARS.filter(function(r){return r.car&&r.fecha;});
+  return Object.keys(byKey).map(function(k){return byKey[k];}).filter(function(e){
+    var d0=new Date(e.fecha+'T00:00:00');
+    return!reps.some(function(r){
+      if(r.car!==e.car)return false;
+      var diff=Math.round((r.fecha-d0)/86400000);
+      return diff>=0&&diff<=DESC_WIN;
+    });
+  }).sort(function(a,b){return b.fecha.localeCompare(a.fecha);});
+}
+function descCardHTML(e){
+  var col=e.sev===3?'#ef4444':e.sev===2?'#f97316':'#f59e0b';
+  var lbl=e.sev===3?'🔴 Grave':e.sev===2?'⚠️ Leve':'🔧 Pendiente';
+  return'<div class="card" style="margin-bottom:10px;border-left:4px solid '+col+'"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap"><div><span style="font-size:14px;font-weight:700;color:#93c5fd">'+e.car+'</span> '+fb(e.fab)+'<div style="font-size:11px;color:#fff;margin-top:4px">'+dStr(e.fecha)+'</div>'+(e.desc?'<div style="font-size:12px;color:'+col+';font-weight:600;margin-top:5px">📌 '+e.desc+'</div>':'')+'</div><span style="background:'+col+'22;color:'+col+';padding:4px 10px;border-radius:7px;font-size:11px;font-weight:700;white-space:nowrap;flex-shrink:0">'+lbl+'</span></div><div style="margin-top:8px;font-size:10px;color:#fff">👤 '+e.user+(e.tur?' · '+e.tur:'')+'</div></div>';
+}
+function rDesc(){
+  if(!REPARS.length){document.getElementById('desc-nos').classList.remove('hid');document.getElementById('desc-bdy').classList.add('hid');return;}
+  document.getElementById('desc-nos').classList.add('hid');
+  document.getElementById('desc-bdy').classList.remove('hid');
+  var el=document.getElementById('id-fab');
+  if(el&&!el.dataset.fill){el.dataset.fill='1';
+    var fabs=['Todas'].concat(uniq(DATA.map(function(r){return r._fab;}).filter(function(f){return f!=='Sin asignar';})));
+    el.innerHTML=fabs.map(function(f){return'<option>'+f+'</option>';}).join('');
+  }
+  var selF=gv('id-fab');
+  var list=descoordinaciones().filter(function(e){return selF==='Todas'||e.fab===selF;});
+  document.getElementById('desc-cnt').textContent=list.length;
+  document.getElementById('desc-lst').innerHTML=list.length?list.map(descCardHTML).join(''):'<div class="card" style="text-align:center;color:#fff;padding:20px">✅ Sin descoordinaciones — todo lo marcado en el checklist tiene su apunte en Incidencias.</div>';
+}
+// Agrupa por carretilla + pregunta concreta del checklist: cuenta cuantas veces
+// esa misma pregunta ha fallado (Leve o Grave) a lo largo del tiempo, con
+// primera y ultima vez. Asi se detectan problemas cronicos que nunca se
+// arreglan de verdad, en vez de solo incidencias sueltas por fecha.
+function recGroups(){
+  var g={};
+  DATA.forEach(function(r){
+    CC.concat(CB,CT).forEach(function(col){
+      var v=r[col];if(v===undefined||v===null||String(v).trim()==='')return;
+      var s=cSt(v);if(s!=='nk'&&s!=='gr')return;
+      var key=r._car+'|'+col;
+      if(!g[key])g[key]={car:r._car,fab:r._fab,q:col,count:0,first:r._ini,last:r._ini,lastAns:'',lastSt:s,lastUser:'',lastTur:''};
+      var e=g[key];
+      e.count++;
+      if(r._ini<e.first)e.first=r._ini;
+      if(r._ini>=e.last){e.last=r._ini;e.lastAns=cTxt(v);e.lastSt=s;e.lastUser=r._nom;e.lastTur=r._tur;}
+    });
+  });
+  return Object.keys(g).map(function(k){return g[k];});
+}
+function recCardHTML(e){
+  var col=cCol(e.lastSt);
+  var dias=Math.round((e.last-e.first)/86400000);
+  return'<div class="card" style="margin-bottom:10px;border-left:4px solid '+col+'"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap"><div><span style="font-size:14px;font-weight:700;color:#93c5fd">'+e.car+'</span> '+fb(e.fab)+'<div style="font-size:12px;color:#fff;margin-top:5px">'+e.q.replace('¿','').replace('?','').trim()+'</div><div style="font-size:12px;color:'+col+';font-weight:700;margin-top:3px">'+e.lastAns+'</div></div><div style="text-align:right;flex-shrink:0"><div style="font-size:22px;font-weight:800;color:'+col+'">'+e.count+'×</div><div style="font-size:9px;color:#fff;text-transform:uppercase">veces reportado</div></div></div><div style="margin-top:9px;font-size:10px;color:#fff;display:flex;gap:14px;flex-wrap:wrap"><span>Desde '+fmtD(new Date(e.first))+'</span><span>hasta '+fmtD(new Date(e.last))+'</span><span>('+dias+' días)</span><span>Último: '+e.lastUser+(e.lastTur?' · '+e.lastTur:'')+'</span></div></div>';
+}
+// Agrupa los problemas recurrentes por carretilla: una carretilla con varios
+// problemas cronicos distintos (ej. puerta bateria + ruedas) se ve junta en
+// una sola tarjeta en vez de repartida y mezclada con otras carretillas.
+function groupCarRec(groups){
+  var byCar={};
+  groups.forEach(function(e){
+    if(!byCar[e.car])byCar[e.car]={car:e.car,fab:e.fab,items:[],total:0,maxCount:0};
+    var g=byCar[e.car];g.items.push(e);g.total+=e.count;if(e.count>g.maxCount)g.maxCount=e.count;
+  });
+  return Object.keys(byCar).map(function(k){return byCar[k];}).sort(function(a,b){return b.maxCount-a.maxCount||b.total-a.total;});
+}
+function carRecHTML(g){
+  var items=g.items.slice().sort(function(a,b){return b.count-a.count;});
+  var rows=items.map(function(e,i){
+    var col=cCol(e.lastSt);var dias=Math.round((e.last-e.first)/86400000);
+    // Barra de duracion: escala fija (200 dias = barra llena) para que se
+    // pueda comparar "cuanto lleva esto sin arreglarse" de un vistazo entre
+    // problemas y entre carretillas, no solo leyendo el numero.
+    var barPct=Math.max(4,Math.min(100,Math.round(dias/200*100)));
+    var meta='<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:7px">'
+      +'<span style="display:inline-flex;align-items:center;gap:4px;font-size:9px;color:#fff;background:#0f172a;border:1px solid #1e3a5f;border-radius:5px;padding:2px 7px">📅 '+fmtD(new Date(e.first))+' → '+fmtD(new Date(e.last))+'</span>'
+      +'<span style="display:inline-flex;align-items:center;gap:4px;font-size:9px;color:#fff;background:#0f172a;border:1px solid #1e3a5f;border-radius:5px;padding:2px 7px">👤 '+e.lastUser+'</span>'
+      +'</div>'
+      +'<div style="margin-top:6px;display:flex;align-items:center;gap:8px"><div style="flex:1;height:5px;background:#0f172a;border-radius:3px;overflow:hidden"><div style="height:100%;width:'+barPct+'%;background:'+col+';border-radius:3px"></div></div><span style="font-size:9px;color:'+col+';font-weight:700;flex-shrink:0;white-space:nowrap">'+dias+' días</span></div>';
+    return'<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;padding:9px 0'+(i?';border-top:1px solid #1e3a5f':'')+'"><div style="flex:1;min-width:200px"><div style="font-size:12px;color:#fff">'+e.q.replace('¿','').replace('?','').trim()+'</div><div style="font-size:11px;color:'+col+';font-weight:700;margin-top:2px">'+e.lastAns+'</div>'+meta+'</div><div style="font-size:18px;font-weight:800;color:'+col+';flex-shrink:0">'+e.count+'×</div></div>';
+  }).join('');
+  // Si hay Excel de reparaciones cargado, se ve de un vistazo si esta carretilla
+  // tiene ya una reparacion pendiente registrada, o cuando fue la ultima vez
+  // que algo se marco como solucionado.
+  var repBadge='';
+  if(REPARS.length){
+    var reps=REPARS.filter(function(r){return r.car===g.car;});
+    var pend=reps.filter(function(r){return r.estado.toLowerCase().trim()==='pendiente';});
+    if(pend.length){
+      repBadge='<div style="margin-top:9px;padding:8px 10px;background:#f59e0b11;border:1px solid #f59e0b33;border-radius:7px;font-size:11px;color:#fcd34d">🔧 '+pend.length+' reparación'+(pend.length===1?'':'es')+' pendiente'+(pend.length===1?'':'s')+' registrada'+(pend.length===1?'':'s')+': '+pend.map(function(r){return r.incidencia;}).join('; ')+'</div>';
+    }else if(reps.length){
+      var last=reps.slice().sort(function(a,b){return(b.fechaArreglo||b.fecha||0)-(a.fechaArreglo||a.fecha||0);})[0];
+      var lf=last.fechaArreglo||last.fecha;
+      repBadge='<div style="margin-top:9px;padding:8px 10px;background:#10b98111;border:1px solid #10b98133;border-radius:7px;font-size:11px;color:#86efac">✅ Sin reparaciones pendientes registradas'+(lf?' · última resuelta '+fmtD(lf):'')+'</div>';
+    }else{
+      repBadge='<div style="margin-top:9px;padding:8px 10px;background:#1e293b;border-radius:7px;font-size:11px;color:#fff">Sin reparaciones registradas con este código de carretilla.</div>';
+    }
+  }
+  return'<div class="card" style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><div><span style="font-size:15px;font-weight:700;color:#93c5fd">'+g.car+'</span> '+fb(g.fab)+'</div><div style="font-size:11px;color:#fff;text-align:right">'+g.items.length+' problema'+(g.items.length===1?'':'s')+' recurrente'+(g.items.length===1?'':'s')+'<br>'+g.total+' reportes en total</div></div>'+rows+repBadge+'</div>';
+}
+function rRec(){
+  var selF=gv('ir-fab'),selTp=gv('ir-tipo'),umb=parseInt(gv('ir-umb'))||3;
+  ['ir-fab'].forEach(function(id){
+    var el=document.getElementById(id);if(el&&!el.dataset.fill){el.dataset.fill='1';
+      var fabs=['Todas'].concat(uniq(DATA.map(function(r){return r._fab;}).filter(function(f){return f!=='Sin asignar';})));
+      el.innerHTML=fabs.map(function(f){return'<option>'+f+'</option>';}).join('');
+    }
+  });
+  var ts=document.getElementById('ir-tipo');
+  if(ts&&!ts.dataset.fill){ts.dataset.fill='1';
+    var pres=[];DATA.forEach(function(r){var t=cTipo(r._car);if(pres.indexOf(t)<0)pres.push(t);});
+    pres.sort(function(x,y){var ix=9,iy=9;TIPOS.forEach(function(T,i){if(T.k===x)ix=T.ord;if(T.k===y)iy=T.ord;});return ix-iy;});
+    ts.innerHTML='<option value="">Todos</option>'+pres.map(function(t){return'<option value="'+t+'">'+t+'</option>';}).join('');
+  }
+  var groups=recGroups().filter(function(e){
+    return e.count>=umb&&(selF==='Todas'||!selF||e.fab===selF)&&(!selTp||cTipo(e.car)===selTp);
+  }).sort(function(a,b){return b.count-a.count||b.last-a.last;});
+  var el=document.getElementById('rec-lst');
+  if(!groups.length){el.innerHTML='<div class="card" style="text-align:center;color:#fff;padding:30px">No hay problemas que se repitan '+umb+' veces o más con los filtros actuales.</div>';return;}
+  // Separadas por si siguen activas (ultima vez reportadas hace <=30 dias desde
+  // hoy) o son mas antiguas: un problema recurrente que no se reporta desde
+  // hace tiempo puede ya estar resuelto, mientras que uno reciente sigue vivo.
+  var cutoff=new Date(Date.now()-30*86400000);
+  var recientes=groupCarRec(groups.filter(function(e){return e.last>=cutoff;}));
+  var previas=groupCarRec(groups.filter(function(e){return e.last<cutoff;}));
+  var out='';
+  out+='<details open style="margin-bottom:14px"><summary style="cursor:pointer;font-weight:700;color:#93c5fd;font-size:13px;padding:8px 2px">🕐 Último mes ('+recientes.length+' carretillas)</summary><div style="margin-top:10px">'
+    +(recientes.length?recientes.map(carRecHTML).join(''):'<div class="card" style="text-align:center;color:#fff;padding:20px">Ninguno en el último mes.</div>')+'</div></details>';
+  out+='<details style="margin-bottom:14px"><summary style="cursor:pointer;font-weight:700;color:#fff;font-size:13px;padding:8px 2px">📦 Anteriores, sin reportarse en el último mes ('+previas.length+' carretillas)</summary><div style="margin-top:10px">'
+    +(previas.length?previas.map(carRecHTML).join(''):'<div class="card" style="text-align:center;color:#fff;padding:20px">No hay ninguno.</div>')+'</div></details>';
+  el.innerHTML=out;
+}
+function rInc(){
+  var selF=gv('i-fab'),selTp=LIGHT?'':gv('i-tipo'),solo=LIGHT?false:document.getElementById('i-solo').checked;
+  var byC={};DATA.slice().sort(function(a,b){return a._ini-b._ini;}).forEach(function(r){if(!byC[r._car])byC[r._car]=[];byC[r._car].push(r);});
+  var cds=srtC(Object.keys(byC)).map(function(c){var rows=byC[c];var u=rows[rows.length-1];return{car:c,fab:u._fab,ti:rows.filter(function(r){return r._ip;}).length,gr:rows.filter(function(r){return r._res.includes('GRAVE');}).length,lv:rows.filter(function(r){return r._res.includes('LEVE');}).length,pe:(u._ip||(LIGHT&&repPend(c))),desc:u._id,fecha:u._fStr,user:u._nom};}).filter(function(p){return(selF==='Todas'||p.fab===selF)&&(!selTp||cTipo(p.car)===selTp);});
+  // Orden por tipo (dobles, sencillas, y despues transpales) y por numero dentro
+  // de cada tipo. Las pendientes se localizan con el check "Solo pendientes".
+  var ordC=srtT(cds.map(function(c){return c.car;}));
+  cds.sort(function(a,b){return ordC.indexOf(a.car)-ordC.indexOf(b.car);});
+  var ts=document.getElementById('i-tipo');
+  if(ts){
+    var pres=[];DATA.forEach(function(r){var t=cTipo(r._car);if(pres.indexOf(t)<0)pres.push(t);});
+    pres.sort(function(x,y){var ix=9,iy=9;TIPOS.forEach(function(T,i){if(T.k===x)ix=T.ord;if(T.k===y)iy=T.ord;});return ix-iy;});
+    var sig=pres.join('|');
+    if(ts.dataset.sig!==sig){
+      ts.dataset.sig=sig;var pv=ts.value;
+      ts.innerHTML='<option value="">Todos</option>'+pres.map(function(t){return'<option value="'+t+'"'+(t===pv?' selected':'')+'>'+t+'</option>';}).join('');
+    }
+  }
+  document.getElementById('inc-cnt').textContent=cds.filter(function(c){return c.pe;}).length;
+  if(solo)cds=cds.filter(function(c){return c.pe;});
+  incC=cds;
+  if(LIGHT){document.getElementById('inc-cds').innerHTML=cds.map(function(p,i){return'<button class="ic" id="ic'+i+'" title="'+p.car.replace(/"/g,'')+'" onclick="sInc('+i+')">'+chipLbl(p.car)+(p.pe?'<i class="dot"></i>':'')+'</button>';}).join('');}else document.getElementById('inc-cds').innerHTML=cds.map(function(p,i){return'<div class="ic" id="ic'+i+'" onclick="sInc('+i+')" style="cursor:pointer;border:1px solid #1e3a5f"><div style="font-size:14px;font-weight:700;color:#93c5fd">'+p.car+'</div><div style="margin-top:4px">'+fb(p.fab)+'</div><div style="margin-top:14px;display:flex;gap:14px"><div class="sb"><div class="sv" style="color:#f59e0b">'+p.ti+'</div><div class="sl">Incid.</div></div><div class="sb"><div class="sv" style="color:#ef4444">'+p.gr+'</div><div class="sl">Graves</div></div><div class="sb"><div class="sv" style="color:#f97316">'+p.lv+'</div><div class="sl">Leves</div></div></div></div>';}).join('');
+  var selI=document.getElementById('inc-pan').dataset.car;
+  if(selI){var ix=cds.map(function(c){return c.car;}).indexOf(selI);if(ix>=0)sInc(ix,true);else{document.getElementById('inc-pan').innerHTML='Selecciona una carretilla para ver sus incidencias';document.getElementById('inc-pan').dataset.car='';document.getElementById('inc-pan').classList.remove('twocol');}}
+}
+// Todas las incidencias (registros con resultado distinto de OK) de una carretilla,
+// mas recientes primero: Fecha, tipo, turno y usuario.
+// Descripcion de una incidencia: si el operario relleno el texto libre de
+// "incidencia ya reportada pendiente" (r._id) se usa esa. Si no (por ejemplo
+// porque marco "Pendiente: No" pero el checklist SI encontro fallos ese turno,
+// como rasguños o suciedad), se construye a partir de las preguntas que
+// fallaron ese turno, para no dejar la incidencia sin descripcion.
+function incDesc(r){
+  if(r._id&&r._id.trim())return r._id.trim();
+  var probs=CC.concat(CB,CT).filter(function(col){
+    var v=r[col];if(v===undefined||v===null||String(v).trim()==='')return false;
+    var s=cSt(v);return s==='nk'||s==='gr';
+  }).map(function(col){
+    var lbl=col.replace('¿','').replace('?','').trim();
+    var v=r[col];var ans=cTxt(v);var acol=cCol(cSt(v));
+    return ans?(lbl+': <span style="color:'+acol+';font-weight:700">'+ans+'</span>'):lbl;
+  });
+  return probs.join('; ');
+}
+// Etiqueta corta de la casilla: "Carretilla 28 (Doble ...)" -> "C28". El resto de vehiculos conserva su nombre.
+function chipLbl(c){var m=String(c).match(/^Carretilla\s+0*(\d+)/i);return m?'C'+m[1]:String(c);}
+function repPend(car){return REPARS.some(function(r){return r.car===car&&String(r.estado||'').toLowerCase().trim()==='pendiente';});}
+// Cada columna llega hasta el borde inferior de la ventana y hace scroll por su cuenta.
+function fitCols(){document.querySelectorAll('.inc-col').forEach(function(el){var top=el.getBoundingClientRect().top+window.scrollY;el.style.maxHeight=Math.max(260,window.innerHeight-top-16)+'px';});}
+window.addEventListener('resize',function(){if(LIGHT)fitCols();});
+function sInc(i,keep){
+  var p=incC[i];if(!p)return;
+  document.querySelectorAll('#inc-cds .ic').forEach(function(e){e.classList.remove('sel');});
+  var el=document.getElementById('ic'+i);if(el)el.classList.add('sel');
+  var pan=document.getElementById('inc-pan');
+  pan.dataset.car=p.car;
+  pan.style.display='block';pan.style.alignItems='flex-start';pan.style.justifyContent='flex-start';
+  var rows=DATA.filter(function(r){return r._car===p.car&&!r._res.includes('TODO OK');}).sort(function(a,b){return b._ini-a._ini;});
+  var body=rows.length?rows.map(function(r){
+    // El tipo (Leve/Pendiente/Grave) siempre debe verse: si el resultado no
+    // encaja con ninguna categoria conocida, se usa una etiqueta neutra en vez
+    // de dejar la pastilla vacia.
+    var lbl=rl(r._res),col=rc(r._res);
+    if(!lbl||!lbl.trim()){lbl='Incidencia';col='#94a3b8';}
+    var desc=incDesc(r);
+    return'<div style="background:#0f172a;border-radius:8px;padding:10px 12px;margin-bottom:7px;border-left:3px solid '+col+'"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><span style="font-size:11px;color:#fff;font-weight:600;white-space:nowrap">'+r._fStr+'</span><span style="background:'+col+'22;color:'+col+';padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;white-space:nowrap;flex-shrink:0">'+lbl+'</span></div><div style="margin-top:5px;display:flex;gap:6px;align-items:center;flex-wrap:wrap">'+tb(r._tur)+'<span style="font-size:11px;color:#fff">'+r._nom+'</span>'+(desc?'<span style="font-size:11px;color:#fcd34d">· 📌 '+desc+'</span>':'')+'</div></div>';
+  }).join(''):'<div style="color:#fff;font-size:12px">Sin incidencias registradas en esta carretilla.</div>';
+  // Reparaciones registradas para esta carretilla en el Excel de seguimiento
+  // (si se ha cargado), para ver si lo que aparece como recurrente en el
+  // checklist ya se esta gestionando o no.
+  // Pendientes arriba (mas recientes primero) y despues las solucionadas, tambien de mas reciente a mas antigua.
+  var esPend=function(r){return String(r.estado||'').toLowerCase().trim()==='pendiente';};
+  var reps=REPARS.filter(function(r){return r.car===p.car;}).sort(function(a,b){
+    var pa=esPend(a)?0:1,pb=esPend(b)?0:1;
+    return pa-pb||(b.fecha||0)-(a.fecha||0);
+  });
+  var repsBlock='';
+  if(REPARS.length){
+    repsBlock='<div style="font-size:10px;font-weight:600;color:#fff;margin:16px 0 9px;text-transform:uppercase;letter-spacing:1px">🔧 Reparaciones registradas ('+reps.length+')</div>'
+      +(reps.length?reps.map(function(r){
+        var pend=r.estado.toLowerCase().trim()==='pendiente';
+        var col=pend?'#f59e0b':'#22c55e';
+        return'<div style="background:#0f172a;border-radius:8px;padding:10px 12px;margin-bottom:7px;border-left:3px solid '+col+'"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><span style="font-size:11px;color:#fff;font-weight:600">'+(r.fecha?fmtD(r.fecha):'Sin fecha')+'</span><span style="background:'+col+'22;color:'+col+';padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700">'+(pend?'🔧 Pendiente':'✅ '+(r.estado||'Solucionado'))+'</span></div><div style="font-size:11px;color:#fff;margin-top:5px">'+r.incidencia+'</div><div style="font-size:10px;color:#fff;margin-top:4px">'+r.usuario+(r.resp?' · asignado a '+r.resp:'')+(!pend&&r.fechaArreglo?' · arreglado '+fmtD(r.fechaArreglo):'')+'</div></div>';
+      }).join(''):'<div style="color:#fff;font-size:12px">No hay reparaciones registradas con ese código de carretilla en el Excel de seguimiento.</div>');
+  }
+  if(LIGHT){
+    pan.classList.add('twocol');
+    var hdrL='<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px"><div><div style="font-size:18px;font-weight:800;color:#93c5fd">'+p.car+'</div><div style="font-size:11px;color:#fff;margin-top:4px">'+fb(p.fab)+'</div></div>'+(p.pe?'<span style="background:#f59e0b22;color:#f59e0b;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700">PENDIENTE</span>':'')+'</div>';
+    var colL='<div style="font-size:10px;font-weight:600;color:#fff;margin-bottom:9px;text-transform:uppercase;letter-spacing:1px">Incidencias ('+rows.length+')</div>'+body;
+    var colR=REPARS.length?repsBlock:'<div style="font-size:10px;font-weight:600;color:#fff;margin-bottom:9px;text-transform:uppercase;letter-spacing:1px">🔧 Reparaciones registradas</div><div style="color:#fff;font-size:12px">Carga el Excel de Reparaciones para verlas aquí.</div>';
+    pan.innerHTML=hdrL+'<div class="inc2"><div class="inc-col">'+colL+'</div><div class="inc-col">'+colR+'</div></div>';
+    fitCols();return;
+  }
+  pan.innerHTML='<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;width:100%"><div><div style="font-size:18px;font-weight:800;color:#93c5fd">'+p.car+'</div><div style="font-size:11px;color:#fff;margin-top:4px">'+fb(p.fab)+'</div></div>'+(p.pe?'<span style="background:#f59e0b22;color:#f59e0b;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700">PENDIENTE</span>':'')+'</div><div style="font-size:10px;font-weight:600;color:#fff;margin-bottom:9px;text-transform:uppercase;letter-spacing:1px">Incidencias ('+rows.length+')</div>'+body+repsBlock;
+}
+
+// ── HOROMETROS ────────────────────────────────────────────────────────────────
+function rHorRng(){
+  var c=document.getElementById('hor-rng');
+  var yrs=uniq(DATA.map(function(r){return r._fec.getUTCFullYear();})).sort();
+  var cy=horA?parseInt(horA):yrs[yrs.length-1];
+  if(horP==='semana'){
+    if(!horS)horS=toISO(monOf(new Date()));
+    var mon=new Date(horS+'T00:00:00Z');var sat=addD(mon,5);
+    c.innerHTML='<div style="display:flex;align-items:center;gap:8px"><button class="nb" onclick="horS=toISO(addD(new Date(horS+\'T00:00:00Z\'),-7));rHor()">◀</button><span style="font-size:12px;color:#e2e8f0;min-width:210px;text-align:center;font-weight:600">'+p2(mon.getUTCDate())+'/'+p2(mon.getUTCMonth()+1)+' → '+p2(sat.getUTCDate())+'/'+p2(sat.getUTCMonth()+1)+'</span><button class="nb" onclick="horS=toISO(addD(new Date(horS+\'T00:00:00Z\'),7));rHor()">▶</button></div>';
+  } else if(horP==='mes'){
+    var sy=horA||String(cy);var sm=horM!==''?parseInt(horM):new Date().getMonth();
+    c.innerHTML='<select class="hs" onchange="horA=this.value;rHor()">'+yrs.map(function(y){return'<option value="'+y+'"'+(String(y)===sy?' selected':'')+'>'+y+'</option>';}).join('')+'</select> <select class="hs" onchange="horM=this.value;rHor()">'+MES.map(function(m,i){return'<option value="'+i+'"'+(i===sm?' selected':'')+'>'+m+'</option>';}).join('')+'</select>';
+  } else if(horP==='6meses'){
+    c.innerHTML='<input type="date" class="fd" value="'+(horD||'')+'" onchange="horD=this.value;rHor()" style="min-width:140px"> → <input type="date" class="fd" value="'+(horH||'')+'" onchange="horH=this.value;rHor()" style="min-width:140px">';
+  } else {
+    var sy2=horA||String(cy);
+    c.innerHTML='<select class="hs" onchange="horA=this.value;rHor()">'+yrs.map(function(y){return'<option value="'+y+'"'+(String(y)===sy2?' selected':'')+'>'+y+'</option>';}).join('')+'</select>';
+  }
+}
+function rHor(){
+  document.querySelectorAll('#hor-pb .pb').forEach(function(b){b.classList.toggle('active',b.dataset.p===horP);b.onclick=function(){horP=b.dataset.p;selC=[];rHorRng();rHor();};});
+  rHorRng();
+  var selF=gv('h-fab');
+  var allC=srtC(uniq(DATA.filter(function(r){return selF==='Todas'||r._fab===selF;}).map(function(r){return r._car;})));
+  document.getElementById('h-cars').innerHTML='<button class="cb" style="'+(selC.length===0?'background:#3b82f6;color:#fff':'')+'" onclick="selC=[];rHor()">Todas</button>'+allC.map(function(c,i){return'<button class="cb" style="'+(selC.includes(c)?'background:'+CLR[i%CLR.length]+'33;color:'+CLR[i%CLR.length]+';border-color:'+CLR[i%CLR.length]:'')+'" onclick="tcC(\''+c.replace(/'/g,"\\'")+'\')">'+c.replace(/Carretil+a\s*/i,'').trim()+'</button>';}).join('');
+  var now=new Date();var yrs=uniq(DATA.map(function(r){return r._fec.getUTCFullYear();})).sort();
+  var base=[],labels=[],title='';
+  if(horP==='semana'){
+    if(!horS)horS=toISO(monOf(now));
+    var mon=new Date(horS+'T00:00:00Z');var dns=['Lun','Mar','Mié','Jue','Vie','Sáb'];
+    labels=dns.map(function(d,i){var dt=addD(mon,i);return d+' '+p2(dt.getUTCDate())+'/'+p2(dt.getUTCMonth()+1);});
+    var sat=addD(mon,5);
+    base=DATA.filter(function(r){return(selF==='Todas'||r._fab===selF)&&r._fISO>=toISO(mon)&&r._fISO<=toISO(sat)&&r._hor&&r._hor>0&&r._hor<100000;});
+    title='Semana '+p2(mon.getUTCDate())+'/'+p2(mon.getUTCMonth()+1)+' → '+p2(sat.getUTCDate())+'/'+p2(sat.getUTCMonth()+1);
+  } else if(horP==='mes'){
+    var y=parseInt(horA||yrs[yrs.length-1]),m=horM!==''?parseInt(horM):now.getMonth();
+    var dm=new Date(y,m+1,0).getDate();labels=[];for(var di=1;di<=dm;di++)labels.push(p2(di));
+    base=DATA.filter(function(r){return(selF==='Todas'||r._fab===selF)&&r._fec.getUTCFullYear()===y&&r._fec.getUTCMonth()===m&&r._hor&&r._hor>0&&r._hor<100000;});
+    title=MES[m]+' '+y;
+  } else if(horP==='6meses'){
+    var des=horD?new Date(horD+'T00:00:00Z'):new Date(new Date().setMonth(now.getMonth()-6));
+    var has=horH?new Date(horH+'T00:00:00Z'):now;
+    base=DATA.filter(function(r){return(selF==='Todas'||r._fab===selF)&&r._fISO>=toISO(des)&&r._fISO<=toISO(has)&&r._hor&&r._hor>0&&r._hor<100000;});
+    var wks={};base.forEach(function(r){wks[toISO(monOf(r._fec))]=true;});
+    labels=Object.keys(wks).sort().map(function(w){var dt=new Date(w+'T00:00:00Z');return p2(dt.getUTCDate())+'/'+p2(dt.getUTCMonth()+1);});
+    title='Rango personalizado';
+  } else {
+    var y2=parseInt(horA||yrs[yrs.length-1]);labels=MES;
+    base=DATA.filter(function(r){return(selF==='Todas'||r._fab===selF)&&r._fec.getUTCFullYear()===y2&&r._hor&&r._hor>0&&r._hor<100000;});
+    title='Año '+y2;
+  }
+  document.getElementById('h-tit').textContent='📈 Horómetro — '+title;
+  var vis=selC.length===0?allC:selC;
+  var wkKeys=horP==='6meses'?Object.keys({}).sort():[];
+  if(horP==='6meses'){var wks2={};base.forEach(function(r){wks2[toISO(monOf(r._fec))]=true;});wkKeys=Object.keys(wks2).sort();}
+  var ds=vis.map(function(c,i){
+    var data=labels.map(function(lbl,li){
+      var pts=base.filter(function(r){
+        if(r._car!==c)return false;
+        if(horP==='semana'){var dt=addD(new Date(horS+'T00:00:00Z'),li);return r._fISO===toISO(dt);}
+        if(horP==='mes')return r._fec.getUTCDate()===li+1;
+        if(horP==='6meses')return wkKeys[li]&&toISO(monOf(r._fec))===wkKeys[li];
+        if(horP==='año')return r._fec.getUTCMonth()===li;
+        return false;
+      });
+      return pts.length?Math.max.apply(null,pts.map(function(r){return r._hor;})):null;
+    });
+    return{label:c.replace(/Carretil+a\s*/i,'').trim(),data:data,borderColor:CLR[i%CLR.length],backgroundColor:CLR[i%CLR.length]+'22',tension:.3,pointRadius:horP==='semana'?4:0,spanGaps:true,borderWidth:2};
+  });
+  dch('hor');
+  CHS.hor=new Chart(document.getElementById('ch-hor').getContext('2d'),{type:'line',data:{labels:labels,datasets:ds},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#94a3b8',font:{size:10},boxWidth:12}}},scales:{x:{ticks:{color:'#64748b',font:{size:horP==='mes'?8:10},maxRotation:horP==='mes'?60:0},grid:{color:'#1e3a5f'}},y:{ticks:{color:'#64748b',callback:function(v){return v+'h'}},grid:{color:'#1e3a5f'}}}}});
+}
+function tcC(c){if(selC.includes(c))selC=selC.filter(function(x){return x!==c;});else selC.push(c);rHor();}
+
+// ── FICHA COMPARTIDA (usada por Registros e Incidencias) ───────────────────────
+function detHTML(r){
+  function blq(lst,tit){
+    var items=lst.map(function(col){
+      var val=r[col];if(val===undefined||val===null||String(val).trim()==='')return'';
+      var s=cSt(val);
+      return'<div class="cki'+(s==='ok'?'':s==='in'?' inf':' nok')+'"><span style="font-size:13px">'+cIco(s)+'</span><div><div style="font-size:9px;color:#fff">'+col.replace('¿','').replace('?','').trim()+'</div><div style="font-size:10px;color:'+cCol(s)+';margin-top:2px">'+cTxt(val)+'</div></div></div>';
+    }).join('');
+    if(!items)return'';
+    return'<div style="font-size:10px;font-weight:600;color:#fff;margin:4px 0 9px;text-transform:uppercase;letter-spacing:1px">'+tit+'</div><div class="ckg">'+items+'</div>';
+  }
+  return'<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;width:100%"><div><div style="font-size:18px;font-weight:800;color:#93c5fd">'+r._car+'</div><div style="font-size:11px;color:#fff;margin-top:4px">'+r._fStr+' · '+tb(r._tur)+' · '+fb(r._fab)+'</div><div style="font-size:11px;color:#fff;margin-top:3px">\ud83d\udc64 '+r._nom+'</div></div><span style="background:'+rc(r._res)+'22;color:'+rc(r._res)+';padding:7px 13px;border-radius:8px;font-size:12px;font-weight:700;flex-shrink:0">'+rl(r._res)+'</span></div>'
+  +(r._ip?'<div style="background:#f59e0b11;border:1px solid #f59e0b44;border-radius:8px;padding:12px;margin-bottom:14px;width:100%"><div style="font-weight:700;color:#f59e0b;font-size:12px;margin-bottom:4px">\u26a0\ufe0f Incidencia pendiente</div><div style="font-size:11px;color:#fcd34d">'+(r._id||'Sin descripción')+'</div></div>':'')
+  +blq(CC,r._tp?'Revisión del transpalé':'Revisión de la carretilla')+blq(CT,'Específico del transpalé')+blq(CB,'Batería, carga y aviso');
+}
+
+// ── ANALISIS ──────────────────────────────────────────────────────────────────
+function rAna(){
+  var selF=gv('a-fab');var base=selF==='Todas'?DATA:DATA.filter(function(r){return r._fab===selF;});
+  document.getElementById('a-cnt').textContent=base.length+' registros';
+  var t={Mañana:0,Tarde:0,Noche:0};base.forEach(function(r){t[r._tur]=(t[r._tur]||0)+1;});
+  dch('tur');CHS.tur=new Chart(document.getElementById('ch-tur').getContext('2d'),{type:'bar',data:{labels:Object.keys(t),datasets:[{data:Object.values(t),backgroundColor:['#f59e0b','#3b82f6','#a855f7'],borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#64748b'},grid:{color:'#1e3a5f'}},y:{ticks:{color:'#64748b'},grid:{color:'#1e3a5f'}}}}});
+  var f={};DATA.forEach(function(r){f[r._fab]=(f[r._fab]||0)+1;});
+  dch('fab');CHS.fab=new Chart(document.getElementById('ch-fab').getContext('2d'),{type:'bar',data:{labels:Object.keys(f),datasets:[{data:Object.values(f),backgroundColor:Object.keys(f).map(function(k){return k==='A Grela'?'#06b6d4':k==='Moras'?'#f97316':'#64748b';}),borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#64748b'},grid:{color:'#1e3a5f'}},y:{ticks:{color:'#64748b'},grid:{color:'#1e3a5f'}}}}});
+  var d={};base.forEach(function(r){if(!d[r._fStr])d[r._fStr]={f:r._fStr,ok:0,inc:0};if(r._res.includes('TODO OK'))d[r._fStr].ok++;else d[r._fStr].inc++;});
+  var ev=Object.values(d).sort(function(a,b){return a.f.localeCompare(b.f);}).slice(-30);
+  dch('evol');CHS.evol=new Chart(document.getElementById('ch-evol').getContext('2d'),{type:'bar',data:{labels:ev.map(function(e){return e.f;}),datasets:[{label:'OK',data:ev.map(function(e){return e.ok;}),backgroundColor:'#22c55e',stack:'a'},{label:'Incidencia',data:ev.map(function(e){return e.inc;}),backgroundColor:'#ef4444',stack:'a',borderRadius:[4,4,0,0]}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#94a3b8',font:{size:10}}}},scales:{x:{ticks:{color:'#64748b',font:{size:9},maxRotation:40},grid:{color:'#1e3a5f'}},y:{ticks:{color:'#64748b'},grid:{color:'#1e3a5f'}}}}});
+  var fl=CC.concat(CT).map(function(col){var tot=base.filter(function(r){return r[col];}).length;var nok=base.filter(function(r){return r[col]&&String(r[col]).startsWith('✗');}).length;return{col:col.replace('¿','').replace('?','').trim().slice(0,40),nok:nok,pct:tot>0?(nok/tot*100).toFixed(1):0};}).sort(function(a,b){return b.nok-a.nok;}).slice(0,8);
+  document.getElementById('a-fal').innerHTML=fl.map(function(f2){return'<div style="display:flex;align-items:center;gap:9px;margin-bottom:7px"><div style="font-size:10px;color:#ffffff;width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0">'+f2.col+'</div><div class="bw"><div class="bi" style="width:'+f2.pct+'%;background:#ef4444"></div></div><div style="font-size:10px;color:#fca5a5;width:38px;text-align:right">'+f2.pct+'%</div></div>';}).join('');
+  var rk={};base.forEach(function(r){if(!rk[r._car])rk[r._car]={c:r._car,g:0,p:0};if(r._res.includes('GRAVE'))rk[r._car].g++;if(r._res.includes('PENDIENTE'))rk[r._car].p++;});
+  var rkA=Object.values(rk).sort(function(a,b){return b.g-a.g||b.p-a.p;}).slice(0,6);
+  document.getElementById('a-rnk').innerHTML=rkA.map(function(r2,i){return'<div style="display:flex;align-items:center;gap:9px;background:#0f172a;border-radius:7px;padding:7px 11px;margin-bottom:6px"><span style="font-size:13px;width:20px">'+['🥇','🥈','🥉','4️⃣','5️⃣','6️⃣'][i]+'</span><span style="font-size:11px;color:#93c5fd;flex:1">'+r2.c.replace(/Carretil+a\s*/i,'').trim()+'</span><span style="color:#ef4444;font-size:11px;font-weight:700">'+r2.g+'g</span><span style="color:#f59e0b;font-size:11px">'+r2.p+'p</span></div>';}).join('');
+  var u={};base.forEach(function(r){u[r._nom]=(u[r._nom]||0)+1;});
+  var uA=Object.entries(u).sort(function(a,b){return a[1]-b[1];}).slice(0,8);var maxU=uA.length?Math.max.apply(null,Object.values(u)):1;
+  document.getElementById('a-men').innerHTML=uA.map(function(e){return'<div style="display:flex;align-items:center;gap:9px;margin-bottom:6px"><div style="font-size:11px;color:#ffffff;width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0">'+e[0]+'</div><div class="bw"><div class="bi" style="width:'+e[1]/maxU*100+'%;background:#ef4444"></div></div><div style="font-size:11px;color:#fca5a5;width:32px;text-align:right">'+e[1]+'</div></div>';}).join('');
+}
+
+// ── CONFIG ────────────────────────────────────────────────────────────────────
+function rCfg(){
+  document.getElementById('cfg-eq').textContent=Object.keys(NM).length;
+  document.getElementById('cfg-reg').textContent=DATA.length||'—';
+  document.getElementById('map-lst').innerHTML=Object.entries(NM).map(function(e){return'<div class="mr"><div class="mra">'+e[0]+'</div><div class="mrb">'+e[1]+'</div></div>';}).join('');
+}
+</script>
+</body>
+</html>
